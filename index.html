@@ -1,0 +1,1847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow">
+  <title>dublinspace ♡</title>
+
+  <style>
+    :root {
+      --cream:#f7efe3;
+      --paper:#fffaf3;
+      --brown:#5d4636;
+      --muted:#8b7564;
+      --pink:#d9a6a6;
+      --pink-soft:#f1d6d4;
+      --line:#dbcdbd;
+      --shadow:0 16px 42px rgba(93,70,54,.12);
+    }
+
+    * { box-sizing:border-box; }
+
+    html, body {
+      margin:0;
+      height:calc(100vh - 48px);
+      width:100%;
+      height:100%;
+      overflow:hidden;
+    }
+
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      color:var(--brown);
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255,255,255,.65), transparent 27%),
+        radial-gradient(circle at 84% 68%, rgba(217,166,166,.10), transparent 28%),
+        linear-gradient(135deg,#f7efe3,#ebdfcf);
+      min-height:100vh;
+    }
+
+    button {
+      font:inherit;
+      color:inherit;
+    }
+
+    /*top bar*/
+    .topbar {
+      height:48px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 22px;
+      border-bottom:1px solid rgba(93,70,54,.11);
+      background:rgba(255,250,243,.70);
+      backdrop-filter:blur(12px);
+      position:sticky;
+      top:0;
+      z-index:50;
+    }
+
+    .brand {
+      font-weight:700;
+      letter-spacing:.4px;
+      cursor:pointer;
+    }
+
+    .today {
+      font-size:13px;
+      opacity:.68;
+    }
+
+    /*home*/
+    .home{
+      height:calc(100vh - 48px);
+      width:min(1400px,100%);
+      margin:0 auto;
+      padding:20px 24px;
+
+      display:grid;
+      grid-template-columns:70px minmax(0,1fr) 260px;
+      gap:20px;
+
+      align-items:stretch;
+      position:relative;
+
+      overflow:hidden;
+    }
+
+    /*main page or whateve*/
+    .main-stage{
+      grid-column:2;
+      height:100%;
+      min-height:0;
+      border-radius:30px;
+      position:relative;
+      overflow:hidden;
+      background:
+        radial-gradient(circle at 52% 40%, rgba(255,255,255,.62), transparent 31%),
+        rgba(255,250,243,.27);
+      border:1px solid rgba(219,205,189,.55);
+    }
+
+    .stage-view{
+      display:none;
+      width:100%;
+       height:100%;
+       min-height:0;
+      padding:38px 42px;
+      animation:stageFade .28s ease;
+    }
+
+    .stage-view.active{
+      display:block;
+    }
+
+    @keyframes stageFade{
+      from{opacity:0;transform:translateY(5px)}
+      to{opacity:1;transform:translateY(0)}
+    }
+
+    /*default landing first page*/
+    .landing-view{
+      align-items:center;
+      justify-content:center;
+    }
+
+    .landing-view.active{
+      display:flex;
+    }
+
+    .landing-inner{
+      width:min(520px,100%);
+      text-align:center;
+      margin:auto;
+      transform:translateY(-42px);
+    }
+
+    .landing-heart{
+      font-size:26px;
+      color:#c99494;
+      margin-top:15px;
+      animation:heartFloat 2.8s ease-in-out infinite;
+    }
+
+    .landing-kicker{
+      font-size:10px;
+      letter-spacing:1.2px;
+      opacity:.48;
+      margin-bottom:7px;
+      text-transform:uppercase;
+    }
+
+    .landing-title{
+      font-size:clamp(34px,4vw,45px);
+      line-height:.98;
+      letter-spacing:-1.5px;
+      font-weight:500;
+      margin:0;
+    }
+
+    .landing-message{
+      width:min(350px,100%);
+      margin:10px auto 14px;
+      font-size:14px;
+      line-height:1.45;
+      opacity:.64;
+    }
+
+    .featured-polaroid{
+      width:175px;
+      margin:0 auto 12px;
+      background:#fffdf8;
+      padding:9px 9px 26px;
+      box-shadow:0 16px 34px rgba(93,70,54,.15);
+      transform:rotate(-2.2deg);
+      transition:.25s ease;
+    }
+
+    .featured-polaroid:hover{
+      transform:rotate(0deg) translateY(-3px);
+    }
+
+    .featured-polaroid img{
+      width:100%;
+      aspect-ratio:3/4;
+      object-fit:cover;
+      display:block;
+    }
+
+    .featured-polaroid .caption{
+      margin-top:11px;
+    }
+
+    .random-thought{
+      width:min(410px,100%);
+      margin:0 auto;
+      padding-top:12px;
+      border-top:1px solid rgba(93,70,54,.12);
+    }
+
+    .random-thought .thought-label{
+      display:block;
+      font-size:10px;
+      letter-spacing:1.4px;
+      opacity:.45;
+      margin-bottom:8px;
+    }
+
+    .random-thought p{
+      margin:0;
+      font-family:"Comic Sans MS","Segoe Print",cursive;
+      font-size:15px;
+      line-height:1.55;
+      opacity:.74;
+    }
+
+    /*view*/
+    .view-header{
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:flex-start;
+      margin-bottom:26px;
+    }
+
+    .view-header h2{
+      margin:0 0 7px;
+      font-size:38px;
+      font-weight:500;
+      letter-spacing:-1px;
+    }
+
+    .view-header p{
+      margin:0;
+      font-size:14px;
+      opacity:.62;
+    }
+
+    .back-home{
+      border:1px solid var(--line);
+      background:rgba(255,250,243,.75);
+      border-radius:999px;
+      padding:8px 12px;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+
+    .letters-list{
+      width:min(600px,100%);
+    }
+
+    .letter-card{
+      width:100%;
+      display:flex;
+      align-items:center;
+      gap:13px;
+      text-align:left;
+      border:1px solid var(--line);
+      background:#fffdf8;
+      border-radius:17px;
+      padding:16px;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .letter-card:hover{
+      transform:translateY(-2px);
+      box-shadow:0 8px 20px rgba(93,70,54,.08);
+    }
+
+    .letter-card .mail{font-size:30px;}
+    .letter-info{flex:1;}
+    .letter-info strong{display:block;margin-bottom:3px;}
+    .letter-info span{font-size:13px;opacity:.7;}
+
+    .badge{
+      font-size:11px;
+      padding:5px 8px;
+      border-radius:999px;
+      background:#f1d6d4;
+      letter-spacing:.7px;
+    }
+
+    .coming-soon{
+      text-align:center;
+      margin-top:18px;
+      font-size:13px;
+      opacity:.55;
+    }
+
+    /* ---------- SOMEDAY ---------- */
+    .memo-toolbar{
+      display:flex;
+      justify-content:flex-end;
+      margin:0 0 18px;
+    }
+
+    .add-memo-btn{
+      border:1px solid var(--line);
+      background:var(--pink-soft);
+      border-radius:999px;
+      padding:9px 14px;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .add-memo-btn:hover{
+      transform:translateY(-1px);
+      background:#e9c5c2;
+    }
+
+    .memo-grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .memo{
+      min-height:155px;
+      border:1px solid #e3d4c3;
+      border-radius:18px;
+      background:#fff8e8;
+      padding:18px;
+      box-shadow:0 9px 20px rgba(93,70,54,.07);
+      position:relative;
+      transform:rotate(-1deg);
+      cursor:default;
+    }
+
+    .memo:nth-child(even){
+      background:#fbeeee;
+      transform:rotate(1.2deg);
+    }
+
+    .memo-emoji{
+      font-size:26px;
+      margin-bottom:15px;
+    }
+
+    .memo h3{
+      margin:0 0 12px;
+      font-size:18px;
+      font-weight:500;
+    }
+
+    .memo-status{
+      position:absolute;
+      left:18px;
+      bottom:16px;
+      font-size:12px;
+      opacity:.60;
+    }
+
+    .memo-actions{
+      position:absolute;
+      top:12px;
+      right:12px;
+      display:flex;
+      gap:6px;
+      opacity:0;
+      transition:.2s ease;
+    }
+
+    .memo:hover .memo-actions{opacity:1;}
+
+    .memo-actions button{
+      width:28px;
+      height:28px;
+      border:1px solid rgba(93,70,54,.12);
+      border-radius:50%;
+      background:rgba(255,255,255,.72);
+      cursor:pointer;
+      font-size:12px;
+    }
+
+    /*time*/
+    .time-panel{
+      grid-column:3;
+      align-self:center;
+      width:100%;
+      margin-top:-100px;
+    }
+
+    .time-panel h2{
+      margin:0 0 13px;
+      font-size:12px;
+      letter-spacing:2px;
+      font-weight:700;
+      opacity:.58;
+    }
+
+    .distance-line{
+      display:flex;
+      align-items:center;
+      justify-content:flex-start;
+      flex-wrap:wrap;
+      gap:5px;
+      margin:0 0 14px;
+      font-size:10px;
+      letter-spacing:.2px;
+      opacity:.58;
+    }
+
+    .distance-line .distance-heart{
+      font-size:15px;
+      color:#c99494;
+      animation:heartFloat 2.8s ease-in-out infinite;
+    }
+
+    @keyframes heartFloat{
+      0%,100%{transform:translateY(0)}
+      50%{transform:translateY(-4px)}
+    }
+
+    .time-stack{
+      display:flex;
+      flex-direction:column;
+      gap:13px;
+    }
+
+    .time-card{
+      width:100%;
+      min-height:105px;
+      border:1px solid var(--line);
+      border-radius:24px;
+      background:rgba(255,250,243,.80);
+      box-shadow:0 12px 32px rgba(93,70,54,.075);
+      padding:16px 18px;
+      display:flex;
+      flex-direction:column;
+      justify-content:center;
+      transition:.22s ease;
+      backdrop-filter:blur(10px);
+    }
+
+    .time-card:hover{
+      transform:translateY(-3px);
+      box-shadow:0 16px 34px rgba(93,70,54,.105);
+    }
+
+    .location{
+      font-size:10px;
+      letter-spacing:1.35px;
+      opacity:.62;
+      margin-bottom:10px;
+    }
+
+    .time{
+      font-size:28px;
+      line-height:1;
+      letter-spacing:-1px;
+      margin-bottom:10px;
+      white-space:nowrap;
+    }
+
+    .date{
+      font-size:11px;
+      opacity:.60;
+    }
+
+    /*tiny app rail*/
+    .app-rail{
+      grid-column:1;
+      grid-row:1;
+      align-self:center;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:11px;
+    }
+
+    .rail-btn{
+      width:60px;
+      height:60px;
+      border:1px solid transparent;
+      background:transparent;
+      border-radius:19px;
+      font-size:27px;
+      cursor:pointer;
+      position:relative;
+      transition:.2s ease;
+    }
+
+    .rail-btn:hover,
+    .rail-btn.active{
+      background:rgba(255,250,243,.82);
+      border-color:var(--line);
+      box-shadow:0 8px 22px rgba(93,70,54,.08);
+      transform:translateY(-2px);
+    }
+
+    .rail-btn::before{
+      content:attr(data-label);
+      position:absolute;
+      left:70px;
+      top:50%;
+      transform:translateY(-50%);
+      background:var(--brown);
+      color:var(--paper);
+      font-size:11px;
+      padding:6px 9px;
+      border-radius:8px;
+      opacity:0;
+      pointer-events:none;
+      white-space:nowrap;
+      transition:.18s ease;
+    }
+
+    .rail-btn:hover::before{opacity:1;}
+
+    .rail-divider{
+      width:22px;
+      height:1px;
+      background:rgba(93,70,54,.16);
+      margin:3px 0;
+    }
+
+    .rail-placeholder{
+      opacity:.35;
+    }
+
+    /*noti*/
+    .notification{
+      position:fixed;
+      right:28px;
+      bottom:24px;
+      width:min(350px,calc(100vw - 36px));
+      background:rgba(255,250,243,.93);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:0 16px 36px rgba(93,70,54,.12);
+      padding:14px 15px;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      z-index:60;
+    }
+
+    .notification-copy{flex:1;}
+    .notification strong{display:block;font-size:14px;margin-bottom:2px;}
+    .notification span{font-size:12px;opacity:.62;}
+
+    .soft-btn{
+      border:1px solid var(--line);
+      background:#f4e1df;
+      border-radius:999px;
+      padding:8px 12px;
+      cursor:pointer;
+    }
+
+    /*memo form*/
+    .memo-form-overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(93,70,54,.18);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9998;
+      padding:20px;
+    }
+
+    .memo-form-overlay.show{display:flex;}
+
+    .memo-form{
+      width:min(430px,100%);
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:22px;
+      box-shadow:0 24px 70px rgba(93,70,54,.20);
+      padding:24px;
+    }
+
+    .memo-form h3{
+      margin:0 0 18px;
+      font-size:24px;
+      font-weight:500;
+    }
+
+    .memo-form label{
+      display:block;
+      font-size:12px;
+      letter-spacing:.5px;
+      opacity:.65;
+      margin:14px 0 7px;
+    }
+
+    .memo-form input,
+    .memo-form textarea,
+    .memo-form select{
+      width:100%;
+      border:1px solid var(--line);
+      border-radius:13px;
+      background:#fffdf8;
+      padding:11px 12px;
+      font:inherit;
+      color:var(--brown);
+      outline:none;
+    }
+
+    .memo-form textarea{
+      min-height:90px;
+      resize:vertical;
+    }
+
+    .memo-form-buttons{
+      display:flex;
+      justify-content:flex-end;
+      gap:9px;
+      margin-top:18px;
+    }
+
+    .memo-form-buttons button{
+      border:1px solid var(--line);
+      border-radius:999px;
+      padding:9px 14px;
+      cursor:pointer;
+      background:#fffdf8;
+    }
+
+    .memo-form-buttons .save{background:var(--pink-soft);}
+
+    @media(max-width:900px){
+      .home{
+        grid-template-columns:68px 1fr 250px;
+        gap:16px;
+        padding:30px 18px;
+      }
+      .stage-view{padding:30px 24px;}
+    }
+
+    @media(max-width:720px){
+      .home{
+        grid-template-columns:1fr;
+        padding:20px 14px 100px;
+      }
+
+      .main-stage{
+        grid-column:auto;
+        min-height:560px;
+        order:2;
+      }
+
+      .stage-view{
+        min-height:560px;
+        padding:26px 18px;
+      }
+
+      .time-panel{
+        grid-column:auto;
+        order:1;
+        width:100%;
+      }
+
+      .time-stack{
+        display:grid;
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+
+      .time-card{
+        min-height:112px;
+        padding:17px 18px;
+      }
+
+      .time{font-size:28px;}
+
+      .app-rail{
+        grid-column:auto;
+        grid-row:auto;
+        position:fixed;
+        left:50%;
+        bottom:14px;
+        transform:translateX(-50%);
+        flex-direction:row;
+        z-index:70;
+        padding:7px 9px;
+        border:1px solid var(--line);
+        border-radius:20px;
+        background:rgba(255,250,243,.94);
+        box-shadow:0 12px 30px rgba(93,70,54,.12);
+      }
+
+      .rail-divider{
+        width:1px;
+        height:22px;
+        margin:0 2px;
+      }
+
+      .rail-btn::before{display:none;}
+
+      .memo-grid{
+        grid-template-columns:1fr;
+      }
+
+      .notification{
+        bottom:82px;
+        right:18px;
+      }
+    }
+
+    @media(max-width:480px){
+      .time-stack{grid-template-columns:1fr;}
+      .landing-title{font-size:44px;}
+      .featured-polaroid{width:210px;}
+      .view-header h2{font-size:32px;}
+    }
+
+    /*window*/
+    .window {
+      position:fixed;
+      left:50%;
+      top:50%;
+      transform:translate(-50%,-50%);
+      width:min(700px,calc(100vw - 36px));
+      max-height:calc(100vh - 80px);
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:20px;
+      box-shadow:0 24px 70px rgba(93,70,54,.20);
+      overflow:hidden;
+      display:none;
+      z-index:80;
+    }
+
+    .window.active { display:block; }
+
+    .window-header {
+      height:44px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:0 13px 0 17px;
+      background:#f2e6da;
+      border-bottom:1px solid var(--line);
+    }
+
+    .window-title {
+      font-size:14px;
+      font-weight:700;
+    }
+
+    .window-controls button {
+      width:29px;
+      height:29px;
+      border:0;
+      background:rgba(255,255,255,.62);
+      border-radius:50%;
+      cursor:pointer;
+    }
+
+    .window-body {
+      padding:24px;
+      overflow:auto;
+      max-height:calc(100vh - 124px);
+    }
+
+    .intro h2 {
+      margin:0 0 7px;
+      font-size:28px;
+      font-weight:500;
+    }
+
+    .intro p {
+      margin:0 0 20px;
+      opacity:.72;
+      font-size:15px;
+    }
+
+    /*letters*/
+    .letter-card {
+      width:100%;
+      display:flex;
+      align-items:center;
+      gap:13px;
+      text-align:left;
+      border:1px solid var(--line);
+      background:#fffdf8;
+      border-radius:16px;
+      padding:15px;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .letter-card:hover {
+      transform:translateY(-2px);
+      box-shadow:0 8px 20px rgba(93,70,54,.08);
+    }
+
+    .letter-card .mail { font-size:30px; }
+    .letter-info { flex:1; }
+    .letter-info strong { display:block; margin-bottom:3px; }
+    .letter-info span { font-size:13px; opacity:.7; }
+
+    .badge {
+      font-size:11px;
+      padding:5px 8px;
+      border-radius:999px;
+      background:#f1d6d4;
+      letter-spacing:.7px;
+    }
+
+    .coming-soon {
+      text-align:center;
+      margin-top:18px;
+      font-size:13px;
+      opacity:.55;
+    }
+
+    /*someday*/
+    .memo-grid {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+      margin-top:22px;
+    }
+
+    .memo {
+      min-height:155px;
+      border:1px solid #e3d4c3;
+      border-radius:18px;
+      background:#fff8e8;
+      padding:18px;
+      box-shadow:0 9px 20px rgba(93,70,54,.07);
+      position:relative;
+      transform:rotate(-1deg);
+    }
+
+    .memo:nth-child(even) {
+      background:#fbeeee;
+      transform:rotate(1.2deg);
+    }
+
+    .memo-emoji {
+      font-size:26px;
+      margin-bottom:15px;
+    }
+
+    .memo h3 {
+      margin:0 0 12px;
+      font-size:18px;
+      font-weight:500;
+    }
+
+    .memo-status {
+      position:absolute;
+      left:18px;
+      bottom:16px;
+      font-size:12px;
+      opacity:.60;
+    }
+
+    /*photo galery*/
+
+    #photosView{
+      height:100%;
+      min-height:0;
+      overflow-y:auto;
+      overflow-x:hidden;
+
+      /* makes the scrollbar sit nicely */
+      padding-right:28px;
+    }
+
+    #photosView{
+      height:100%;
+      overflow-y:auto;
+    }
+
+    /* cute subtle scrollbar */
+    #photosView::-webkit-scrollbar{
+      width:6px;
+    }
+
+    #photosView::-webkit-scrollbar-track{
+      background:transparent;
+    }
+
+    #photosView::-webkit-scrollbar-thumb{
+      background:rgba(93,70,54,.18);
+      border-radius:999px;
+    }
+
+
+    .photo-grid{
+      columns:3;
+      column-gap:14px;
+      padding-bottom:40px;
+    }
+
+    .gallery-photo{
+      width:100%;
+      margin-bottom:14px;
+      break-inside:avoid;
+
+      overflow:hidden;
+      border-radius:14px;
+      background:#eee2d4;
+
+      cursor:pointer;
+      transition:.25s ease;
+    }
+
+    /* normal photos — no polaroid */
+    .gallery-photo{
+      width:100%;
+      overflow:hidden;
+      border-radius:14px;
+      background:#eee2d4;
+      cursor:pointer;
+      transition:.25s ease;
+    }
+
+    .gallery-photo:hover{
+      transform:translateY(-3px);
+      box-shadow:0 10px 25px rgba(93,70,54,.12);
+    }
+
+    .gallery-photo img{
+      width:100%;
+      height:auto;
+      display:block;
+    }
+
+
+    /*caption*/
+    .gallery-photo .photo-caption{
+      padding:9px 11px 11px;
+      font-size:12px;
+      opacity:.65;
+      background:rgba(255,250,243,.85);
+    }
+
+
+    @media(max-width:700px){
+      .photo-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+    }
+
+    /*bday popup*/
+    .birthday-popup {
+      position:fixed;
+      inset:0;
+      background:rgba(247,239,227,.97);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:9999;
+      overflow:hidden;
+      animation:fadeInBirthday .35s ease;
+    }
+
+    .birthday-popup.show { display:flex; }
+
+    .birthday-content {
+      text-align:center;
+      padding:30px;
+      position:relative;
+      z-index:2;
+      animation:birthdayPop .6s ease;
+    }
+
+    .birthday-cake {
+      font-size:100px;
+      margin-bottom:18px;
+      animation:cakeBounce 1.5s ease-in-out infinite;
+    }
+
+    .birthday-content h1 {
+      margin:0;
+      font-size:clamp(42px,8vw,88px);
+      font-weight:500;
+      letter-spacing:3px;
+    }
+
+    .birthday-content p {
+      margin:18px 0 28px;
+      font-size:18px;
+      color:var(--muted);
+    }
+
+    .birthday-button {
+      border:1px solid var(--line);
+      background:var(--pink-soft);
+      color:var(--brown);
+      padding:13px 22px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:16px;
+      transition:.2s ease;
+    }
+
+    .birthday-button:hover {
+      transform:translateY(-2px) scale(1.03);
+      background:#e9c5c2;
+    }
+
+    .float-heart {
+      position:absolute;
+      font-size:40px;
+      color:#d9a6a6;
+      opacity:.5;
+      animation:floatHeart 4s ease-in-out infinite;
+    }
+    .h1 { left:10%; top:20%; }
+    .h2 { right:12%; top:25%; animation-delay:.7s; }
+    .h3 { left:20%; bottom:15%; animation-delay:1.2s; }
+    .h4 { right:22%; bottom:18%; animation-delay:.3s; }
+    .h5 { left:50%; top:10%; animation-delay:1.7s; }
+
+    @keyframes fadeInBirthday { from{opacity:0} to{opacity:1} }
+    @keyframes birthdayPop {
+      0%{transform:scale(.8);opacity:0}
+      70%{transform:scale(1.05)}
+      100%{transform:scale(1);opacity:1}
+    }
+    @keyframes cakeBounce {
+      0%,100%{transform:translateY(0) rotate(-2deg)}
+      50%{transform:translateY(-10px) rotate(2deg)}
+    }
+    @keyframes floatHeart {
+      0%,100%{transform:translateY(0) rotate(-8deg)}
+      50%{transform:translateY(-25px) rotate(8deg)}
+    }
+
+    /*letter style*/
+    .letter-paper {
+      width:min(720px,100%);
+      margin:auto;
+      padding:32px 28px 44px;
+      background:
+        linear-gradient(rgba(255,255,255,.55),rgba(255,255,255,.55)),
+        repeating-linear-gradient(0deg,transparent 0,transparent 31px,rgba(93,70,54,.05) 32px);
+      border-radius:16px;
+      border:1px solid #eadfd3;
+      position:relative;
+    }
+
+    .letter-paper h1 {
+      text-align:center;
+      font-size:34px;
+      font-weight:500;
+      margin:4px 0 26px;
+    }
+
+    .letter-paper p {
+      font-size:17px;
+      line-height:1.9;
+      margin:0 0 20px;
+    }
+
+    .signature { text-align:right; margin-top:22px; }
+
+    .polaroid-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:22px;
+      justify-content:center;
+      margin:28px 0;
+    }
+
+    .polaroid {
+      width:190px;
+      background:white;
+      padding:10px 10px 28px;
+      box-shadow:0 10px 20px rgba(93,70,54,.16);
+      transform:rotate(-3deg);
+      transition:.25s ease;
+    }
+
+    .polaroid:nth-child(2) { transform:rotate(4deg); }
+    .polaroid:hover { transform:rotate(0) translateY(-5px) scale(1.02); }
+
+    .polaroid img{
+      width:100%;
+      aspect-ratio:3/4;
+      object-fit:cover;
+      display:block;
+    }
+
+    .caption {
+      text-align:center;
+      margin-top:10px;
+      font-family:"Comic Sans MS","Segoe Print",cursive;
+      font-size:14px;
+    }
+
+    .tiny-heart {
+      position:absolute;
+      right:20px;
+      top:16px;
+      opacity:.45;
+      transform:rotate(12deg);
+      font-size:22px;
+    }
+
+    .easter-egg {
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:14px;
+      padding:12px 14px;
+      box-shadow:var(--shadow);
+      font-size:13px;
+      display:none;
+      z-index:200;
+    }
+    .easter-egg.show { display:block; }
+
+    @media (max-width:780px) {
+      .home {
+        grid-template-columns:1fr;
+        gap:40px;
+        padding:32px 20px 46px;
+        align-items:start;
+      }
+
+      .time-panel {
+        width:min(420px,100%);
+        margin:auto;
+      }
+
+      .hub {
+        width:min(520px,100%);
+        margin:auto;
+      }
+
+      .apps {
+        grid-template-columns:repeat(2,minmax(0,1fr));
+      }
+
+      .notification {
+        width:100%;
+      }
+    }
+
+    @media (max-width:520px) {
+      .topbar { padding:0 14px; }
+      .today { font-size:11px; }
+
+      .home {
+        padding:26px 15px 38px;
+      }
+
+      .time-card {
+        min-height:112px;
+        padding:17px 18px;
+      }
+
+      .time { font-size:31px; }
+
+      .hub h1 {
+        font-size:52px;
+        letter-spacing:-2px;
+      }
+
+      .apps,
+      .home-widgets {
+        gap:12px;
+      }
+
+      .app-card {
+        min-height:140px;
+        padding:17px 15px;
+      }
+
+      .memo-grid,
+      .home-widgets {
+        grid-template-columns:1fr;
+      }
+
+      .window {
+        width:calc(100vw - 24px);
+        max-height:calc(100vh - 40px);
+      }
+
+      .window-body {
+        padding:17px;
+        max-height:calc(100vh - 84px);
+      }
+
+      .letter-paper {
+        padding:24px 18px 34px;
+      }
+
+      .letter-paper p {
+        font-size:16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="topbar">
+    <div class="brand" id="brandHeart">♡ dublinspace</div>
+    <div class="today" id="topDate">21 September 2026</div>
+  </div>
+
+  <main class="home">
+
+    <!-- main page -->
+    <section class="main-stage">
+
+      <!-- home -->
+      <div class="stage-view landing-view active" id="homeView">
+        <div class="landing-inner">
+          <div class="landing-heart">♡</div>
+          <div class="landing-kicker">welcome back</div>
+          <h1 class="landing-title" id="dynamicGreeting">good morning,<br>quan yao</h1>
+          <p class="landing-message" id="dynamicMessage">
+            hope you're having a good day over there ♡
+          </p>
+
+          <div class="featured-polaroid">
+            <img src="photo4.jpg" alt="Us">
+            <div class="caption">us ♡</div>
+          </div>
+
+          <div class="random-thought">
+            <span class="thought-label">A LITTLE THOUGHT FOR YOU</span>
+            <p id="randomThought">“come home soon pls”</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- someday -->
+      <div class="stage-view" id="somedayView">
+        <div class="view-header">
+          <div>
+            <h2>Someday ♡</h2>
+            <p>things I want to do with you, someday.</p>
+          </div>
+          <button class="back-home" onclick="showView('homeView')">← home</button>
+        </div>
+
+        <div class="memo-toolbar">
+          <button class="add-memo-btn" id="addMemoButton">+ add a memo</button>
+        </div>
+
+        <div class="memo-grid" id="memoGrid"></div>
+        <div class="coming-soon">add as many little plans as you want ♡</div>
+      </div>
+
+      <!-- letters -->
+      <div class="stage-view" id="lettersView">
+        <div class="view-header">
+          <div>
+            <h2>Letters 💌</h2>
+            <p>things I wanted you to keep.</p>
+          </div>
+          <button class="back-home" onclick="showView('homeView')">← home</button>
+        </div>
+
+        <div class="letters-list">
+          <button class="letter-card" id="birthdayCard">
+            <div class="mail">💌</div>
+            <div class="letter-info">
+              <strong>Happy Birthday</strong>
+              <span>21 September 2026</span>
+            </div>
+            <div class="badge">NEW</div>
+          </button>
+          <div class="coming-soon">more letters will live here ♡</div>
+        </div>
+      </div>
+
+      <!-- photos -->
+      <div class="stage-view" id="photosView">
+
+        <div class="view-header">
+
+          <div>
+            <h2>Photos 📷</h2>
+
+            <p>
+              little pieces of us.
+            </p>
+          </div>
+
+          <button
+            class="back-home"
+            onclick="showView('homeView')"
+          >
+            ← home
+          </button>
+
+        </div>
+
+
+        <div class="photo-grid">
+
+          <div class="gallery-photo">
+            <img src="photo1.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo2.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo3.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo4.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo5.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo6.jpg" alt="Us">
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- time -->
+    <aside class="time-panel">
+      <h2>OUR TIME</h2>
+
+      <div class="distance-line">
+        <span>Singapore</span>
+        <span>—</span>
+        <span class="distance-heart">♡</span>
+        <span>~15,500 km</span>
+        <span>—</span>
+        <span>Philadelphia</span>
+      </div>
+
+      <div class="time-stack">
+        <div class="time-card">
+          <div class="location">🇸🇬 SINGAPORE</div>
+          <div class="time" id="singaporeTime">--:-- --</div>
+          <div class="date" id="singaporeDate">loading...</div>
+        </div>
+
+        <div class="time-card">
+          <div class="location">🇺🇸 PHILADELPHIA</div>
+          <div class="time" id="philadelphiaTime">--:-- --</div>
+          <div class="date" id="philadelphiaDate">loading...</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- tiny app icons -->
+    <nav class="app-rail" aria-label="dublinspace apps">
+      <button class="rail-btn active" id="homeRail" data-label="home" onclick="showView('homeView')">⌂</button>
+      <div class="rail-divider"></div>
+      <button class="rail-btn" id="somedayRail" data-label="someday" onclick="showView('somedayView')">♡</button>
+      <button class="rail-btn" id="lettersRail" data-label="letters" onclick="showView('lettersView')">💌</button>
+      <button class="rail-btn" id="photosRail" data-label="photos" onclick="showView('photosView')">📷</button>
+      <button class="rail-btn rail-placeholder" data-label="songs · someday">♫</button>
+    </nav>
+
+    <!-- bday letter window -->
+<section class="window" id="birthdayWindow">
+      <div class="window-header">
+        <div class="window-title">happy birthday ♡</div>
+        <div class="window-controls">
+          <button onclick="closeWindow('birthdayWindow')" title="Close">×</button>
+        </div>
+      </div>
+
+      <div class="window-body">
+        <article class="letter-paper">
+          <div class="tiny-heart">♡</div>
+
+          <h1>happy birthday ♡</h1>
+
+          <p>
+            Dear Quan yao,
+          </p>
+
+          <p>
+            Happy 24th birthday honey! You weren't expecting this, were you? I really wanted to wish you happy birthday in person since this is your 
+            first birthday after we got together, but thanks to someone! unfortunately, I'll have to do it here :| I'm not sure if you know but this is 
+            actually the second time, I was at your birthday. ok maybe not at your birthday but I knew your birthday when you turned 23 (I know.. 
+            stalker much?) but in my defence, Aaron told me like I think two seconds before you walked in with Minerva into b3 before your friends 
+            started singing happy birthday. but then I got maybe a bit jealous about you coming in with Minerva so I kinda just slipped out before 
+            you reach to Aaron's table... anyways! the consensus is that now I'm kinda regretting not saying happy birthday then (I did debate on 
+            whether I should text u but figured it's a bit weird to do that). So, I just wanted to wish some wishes for you as you grow one year 
+            older. :D 
+            
+          </p>
+          
+          <p>
+            First, I want to wish you the best in everything you strive for, whether in your studies or in your projects because I know more than anyone 
+            how much you care for them. I wish for you to get to travel to new places and gain more experiences this year with your camera (and hopefully, me?) 
+            and I wish for us to finally play card games together when you come back.. Most importantly, I wish for you to be happy and always be smiling with 
+            that cute smile of yours every second of this year. I also wish this year, you get the opportunity to spend more time and enjoy spending time with 
+            yourself as much as I love spending time with you.
+
+          </p>
+
+          <p>
+            Hopefully, this wasn't too cheesy :D I wonder if you'll cry seeing this letter.. but if you don't, I'll end u lol 
+          </p>
+
+          <div class="polaroid-row">
+
+            <div class="polaroid">
+              <img src="photo1.jpg" alt="Us together">
+              <div class="caption"></div>
+            </div>
+
+            <div class="polaroid">
+              <img src="photo2.jpg" alt="Us together">
+              <div class="caption"></div>
+            </div>
+
+          </div>
+
+          <p>
+            And also, this site is not finished btw. I think we can keep adding little things here over time,
+            so one day, this will be full of our memories!
+          </p>
+
+          <p>
+            I love you soo much. Happy birthday baby ♡
+          </p>
+
+          <p class="signature">
+            Love,<br>
+            Hannah ♡
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <div class="easter-egg" id="easterEgg">
+      you belongs to me ♡
+    </div>
+
+    <div class="notification" id="notification">
+      <div class="notification-copy">
+        <strong>💌 new letter</strong>
+        <span>hannah left you something ♡</span>
+      </div>
+      <button class="soft-btn" id="openNotification">open</button>
+    </div>
+
+  </main>
+
+<!-- add/edit memo -->
+<div class="memo-form-overlay" id="memoFormOverlay">
+
+  <div class="memo-form">
+
+    <h3 id="memoFormTitle">
+      add a someday memo ♡
+    </h3>
+
+    <label for="memoEmoji">
+      tiny icon / emoji
+    </label>
+
+    <input
+      id="memoEmoji"
+      maxlength="6"
+      placeholder="✈️"
+    >
+
+
+    <label for="memoTitle">
+      what do you want to do?
+    </label>
+
+    <textarea
+      id="memoTitle"
+      placeholder="go somewhere new together"
+    ></textarea>
+
+
+    <label for="memoStatus">
+      status
+    </label>
+
+    <select id="memoStatus">
+
+      <option value="♡ someday">
+        ♡ someday
+      </option>
+
+      <option value="✈ planned">
+        ✈ planned
+      </option>
+
+      <option value="✓ we did it!">
+        ✓ we did it!
+      </option>
+
+    </select>
+
+
+    <div class="memo-form-buttons">
+
+      <button id="cancelMemoButton">
+        cancel
+      </button>
+
+      <button
+        class="save"
+        id="saveMemoButton"
+      >
+        save memo ♡
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+  
+<!-- birthday popup -->
+<div id="birthdayPopup" class="birthday-popup">
+  <div class="birthday-content">
+    <div class="birthday-cake">🎂</div>
+    <h1>HAPPY BIRTHDAY ♡</h1>
+    <p>there's a little something waiting for you...</p>
+    <button id="continueBirthday" class="birthday-button">open your letter ♡</button>
+  </div>
+  <span class="float-heart h1">♡</span>
+  <span class="float-heart h2">♡</span>
+  <span class="float-heart h3">♡</span>
+  <span class="float-heart h4">♡</span>
+  <span class="float-heart h5">♡</span>
+</div>
+
+
+  <script>
+    // ---------- time format ----------
+    function twoDigit12Hour(parts) {
+      const hourPart = parts.find(p => p.type === "hour")?.value || "12";
+      return hourPart.padStart(2, "0");
+    }
+
+    function formatClock(timeZone) {
+      const now = new Date();
+
+      const parts = new Intl.DateTimeFormat("en-US", {
+        timeZone,
+        hour:"numeric",
+        minute:"2-digit",
+        hour12:true
+      }).formatToParts(now);
+
+      const hour = twoDigit12Hour(parts);
+      const minute = parts.find(p => p.type === "minute")?.value || "00";
+      const dayPeriod = (parts.find(p => p.type === "dayPeriod")?.value || "").toUpperCase();
+
+      return `${hour}:${minute} ${dayPeriod}`;
+    }
+
+    function formatDate(timeZone) {
+      return new Intl.DateTimeFormat("en-GB", {
+        timeZone,
+        weekday:"long",
+        day:"numeric",
+        month:"long"
+      }).format(new Date());
+    }
+
+    function updateWorldTimes() {
+      document.getElementById("singaporeTime").textContent =
+        formatClock("Asia/Singapore");
+
+      document.getElementById("philadelphiaTime").textContent =
+        formatClock("America/New_York");
+
+      document.getElementById("singaporeDate").textContent =
+        formatDate("Asia/Singapore");
+
+      document.getElementById("philadelphiaDate").textContent =
+        formatDate("America/New_York");
+
+      document.getElementById("topDate").textContent =
+        new Intl.DateTimeFormat("en-GB", {
+          timeZone:"Asia/Singapore",
+          day:"numeric",
+          month:"long",
+          year:"numeric"
+        }).format(new Date());
+    }
+
+    updateWorldTimes();
+    setInterval(updateWorldTimes, 30000);
+
+    // ---------- MAIN STAGE NAVIGATION ----------
+    function closeWindow(id){
+      const el = document.getElementById(id);
+      if(el) el.classList.remove("active");
+    }
+
+    function openWindow(id){
+      const el = document.getElementById(id);
+      if(el) el.classList.add("active");
+    }
+
+    function showView(viewId){
+      document.querySelectorAll(".stage-view").forEach(view => {
+        view.classList.remove("active");
+      });
+
+      const target = document.getElementById(viewId);
+      if(target) target.classList.add("active");
+
+      document.querySelectorAll(".rail-btn").forEach(btn => {
+        btn.classList.remove("active");
+      });
+
+      const railMap = {
+        homeView:"homeRail",
+        somedayView:"somedayRail",
+        lettersView:"lettersRail",
+        photosView:"photosRail"
+      };
+
+      if(railMap[viewId]){
+        document.getElementById(railMap[viewId]).classList.add("active");
+      }
+    }
+
+    document.getElementById("openNotification").addEventListener("click", () => {
+      document.getElementById("notification").style.display = "none";
+      showView("lettersView");
+    });
+
+    // -- america -- //
+    function updateLandingGreeting(){
+      const hourText = new Intl.DateTimeFormat("en-US", {
+        timeZone:"America/New_York",
+        hour:"numeric",
+        hour12:false
+      }).format(new Date());
+
+      const hour = Number(hourText);
+      let greeting = "good morning";
+
+      if(hour >= 12 && hour < 18) greeting = "good afternoon";
+      if(hour >= 18 || hour < 5) greeting = "good night";
+
+      document.getElementById("dynamicGreeting").innerHTML =
+        `${greeting},<br>quan yao`;
+    }
+
+    const littleThoughts = [
+      "“come home soon pls”",
+      "“hmph you hate me”",
+      "“hmph you hate me”",
+      "“can i join your shower..?”",
+      "“don't even look at any woman today”",
+      "“you've got it baby!”",
+      "“you look so cute today”",
+      "“another day closer ♡”",
+      "“i miss you soooo much”",
+      "“you better be sleeping if it's late there”",
+      "“do u love me :3”",
+      "“don't skip any mealsssss”"
+    ];
+
+    function chooseThought(){
+      const index = Math.floor(Math.random() * littleThoughts.length);
+      document.getElementById("randomThought").textContent = littleThoughts[index];
+    }
+
+    updateLandingGreeting();
+    chooseThought();
+
+    // click heart
+    document.getElementById("brandHeart").addEventListener("dblclick", () => {
+      showView("homeView");
+    });
+
+    // ---------- birthday popup ----------
+    const birthdayPopup = document.getElementById("birthdayPopup");
+
+    document.getElementById("birthdayCard").addEventListener("click", () => {
+      birthdayPopup.classList.add("show");
+    });
+
+    document.getElementById("continueBirthday").addEventListener("click", () => {
+      birthdayPopup.classList.remove("show");
+      showView("homeView");
+      openWindow("birthdayWindow");
+    });
+
+
+    // ---------- some day memos ----------
+    const defaultMemos = [
+      { id: 1, emoji: "🃏", title: "finally play card games together", status: "♡ someday" },
+    ];
+
+    let memos = [];
+    let editingMemoId = null;
+
+    async function loadMemos(){
+      const { data, error } = await supabase
+        .from("memos")
+        .select("*")
+        .order("created_at", { ascending: true });
+
+      if(error){
+        console.error(error);
+        return;
+      }
+
+      memos = data;
+      renderMemos();
+    }
+
+    function saveMemos(){
+      localStorage.setItem("dublinspace_someday_memos", JSON.stringify(memos));
+    }
+
+    function escapeHTML(value){
+      return String(value)
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+
+    function renderMemos(){
+      const grid = document.getElementById("memoGrid");
+
+      if(memos.length === 0){
+        grid.innerHTML = `
+          <article class="memo">
+            <div class="memo-emoji">♡</div>
+            <h3>nothing here yet</h3>
+            <div class="memo-status">add your first someday plan</div>
+          </article>
+        `;
+      } else {
+        grid.innerHTML = memos.map(memo => `
+          <article class="memo">
+            <div class="memo-actions">
+              <button onclick="editMemo(${memo.id})" title="Edit">✎</button>
+              <button onclick="deleteMemo(${memo.id})" title="Delete">×</button>
+            </div>
+            <div class="memo-emoji">${escapeHTML(memo.emoji || "♡")}</div>
+            <h3>${escapeHTML(memo.title)}</h3>
+            <div class="memo-status">${escapeHTML(memo.status)}</div>
+          </article>
+        `).join("");
+      }
+
+    }
+
+    function openMemoForm(memo = null){
+      editingMemoId = memo ? memo.id : null;
+
+      document.getElementById("memoFormTitle").textContent =
+        memo ? "edit this memo ♡" : "add a someday memo ♡";
+
+      document.getElementById("memoEmoji").value = memo?.emoji || "";
+      document.getElementById("memoTitle").value = memo?.title || "";
+      document.getElementById("memoStatus").value = memo?.status || "♡ someday";
+
+      document.getElementById("memoFormOverlay").classList.add("show");
+    }
+
+    function closeMemoForm(){
+      document.getElementById("memoFormOverlay").classList.remove("show");
+      editingMemoId = null;
+    }
+
+    function editMemo(id){
+      const memo = memos.find(item => item.id === id);
+      if(memo) openMemoForm(memo);
+    }
+
+    function deleteMemo(id){
+      const memo = memos.find(item => item.id === id);
+      if(!memo) return;
+
+      const ok = confirm(`Delete "${memo.title}"?`);
+      if(!ok) return;
+
+      memos = memos.filter(item => item.id !== id);
+      saveMemos();
+      renderMemos();
+      closeMemoForm();
+    }
+
+    document.getElementById("addMemoButton").addEventListener("click", () => {
+      openMemoForm();
+    });
+
+    document.getElementById("cancelMemoButton").addEventListener("click", closeMemoForm);
+
+    document.getElementById("memoFormOverlay").addEventListener("click", (event) => {
+      if(event.target.id === "memoFormOverlay") closeMemoForm();
+    });
+
+    document.getElementById("saveMemoButton").addEventListener("click", () => {
+      const emoji = document.getElementById("memoEmoji").value.trim() || "♡";
+      const title = document.getElementById("memoTitle").value.trim();
+      const status = document.getElementById("memoStatus").value;
+
+      if(!title){
+        alert("write a little memo first ♡");
+        return;
+      }
+
+      if(editingMemoId){
+        memos = memos.map(memo =>
+          memo.id === editingMemoId
+            ? { ...memo, emoji, title, status }
+            : memo
+        );
+      } else {
+        memos.push({
+          id: Date.now(),
+          emoji,
+          title,
+          status
+        });
+      }
+
+      saveMemos();
+      renderMemos();
+      closeMemoForm();
+    });
+
+    loadMemos();
+
+    // ---------- easter egg ----------
+    const egg = document.getElementById("easterEgg");
+
+    document.getElementById("brandHeart").addEventListener("click", () => {
+      egg.classList.toggle("show");
+      setTimeout(() => egg.classList.remove("show"), 2500);
+    });
+  </script>
+
+</body>
+</html>
