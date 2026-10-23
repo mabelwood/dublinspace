@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="locked">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -187,6 +187,48 @@
       display:block;
     }
 
+    .featured-polaroid video{
+      width:100%;
+      aspect-ratio:16/9;
+      object-fit:cover;
+      display:block;
+      background:#eee2d4;
+    }
+
+    .polaroid-stack{
+      position:relative;
+      width:260px;
+      margin:0 auto 12px;
+    }
+
+    .polaroid-stack .featured-polaroid{
+      width:100%;
+      margin:0;
+    }
+
+    .polaroid-stack .featured-video{
+      position:relative;
+      z-index:2;
+    }
+
+    .stack-behind{
+      position:absolute;
+      top:0;
+      left:0;
+      z-index:1;
+      transform:rotate(5deg) translate(13px,7px);
+      filter:saturate(.92) brightness(.97);
+    }
+
+    .stack-behind img{
+      aspect-ratio:16/9;
+    }
+
+    /*the one behind slides out a little, like you could reach for it*/
+    .polaroid-stack:hover .stack-behind{
+      transform:rotate(8.5deg) translate(22px,11px);
+    }
+
     .featured-polaroid .caption{
       margin-top:11px;
     }
@@ -279,6 +321,10 @@
       border-radius:999px;
       background:#f1d6d4;
       letter-spacing:.7px;
+    }
+
+    .letters-list .letter-card + .letter-card{
+      margin-top:12px;
     }
 
     .coming-soon{
@@ -702,6 +748,7 @@
       .time-stack{grid-template-columns:1fr;}
       .landing-title{font-size:44px;}
       .featured-polaroid{width:210px;}
+      .polaroid-stack{width:290px;}
       .view-header h2{font-size:32px;}
     }
 
@@ -952,6 +999,10 @@
 
     .birthday-popup.show { display:flex; }
 
+    #hannahBirthdayPopup{ overflow-y:auto; }
+
+    .surprise-row{ margin:0 0 6px; }
+
     .birthday-content {
       text-align:center;
       padding:30px;
@@ -1078,6 +1129,14 @@
       display:block;
     }
 
+    .polaroid video{
+      width:100%;
+      aspect-ratio:3/4;
+      object-fit:cover;
+      display:block;
+      background:#eee2d4;
+    }
+
     .caption {
       text-align:center;
       margin-top:10px;
@@ -1189,14 +1248,158 @@
         font-size:16px;
       }
     }
+    /*pin lock*/
+    html.locked, html.locked body { overflow:hidden; }
+
+    html.locked body > *:not(#lockScreen){
+      filter:blur(16px) saturate(.85);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .lock-screen{
+      position:fixed;
+      inset:0;
+      z-index:99999;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:20px;
+      background:rgba(247,239,227,.55);
+      backdrop-filter:blur(6px);
+    }
+
+    html.locked .lock-screen{ display:flex; }
+
+    .lock-card{
+      width:min(380px,100%);
+      background:var(--paper);
+      border:1px solid var(--line);
+      border-radius:24px;
+      box-shadow:0 24px 70px rgba(93,70,54,.20);
+      padding:30px 26px;
+      text-align:center;
+    }
+
+    .lock-heart{
+      font-size:30px;
+      color:var(--pink);
+    }
+
+    .lock-card h2{
+      margin:8px 0 5px;
+      font-size:23px;
+      font-weight:500;
+    }
+
+    .lock-card p{
+      margin:0;
+      font-size:13px;
+      opacity:.6;
+    }
+
+    .pin-row{
+      display:flex;
+      gap:9px;
+      justify-content:center;
+      margin:22px 0 4px;
+    }
+
+    .pin-row input{
+      width:44px;
+      height:54px;
+      text-align:center;
+      font:inherit;
+      font-size:22px;
+      color:var(--brown);
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:#fffdf8;
+      outline:none;
+      caret-color:var(--pink);
+    }
+
+    .pin-row input:focus{
+      border-color:var(--pink);
+      box-shadow:0 0 0 3px var(--pink-soft);
+    }
+
+    .lock-note{
+      font-size:12px;
+      min-height:18px;
+      opacity:.6;
+      margin-top:12px;
+    }
+
+    .lock-note.error{
+      color:#b4615f;
+      opacity:1;
+    }
+
+    .lock-card.shake{ animation:lockShake .4s; }
+
+    @keyframes lockShake{
+      25%{ transform:translateX(-7px); }
+      50%{ transform:translateX(7px); }
+      75%{ transform:translateX(-4px); }
+    }
+
+    /*lock button in the top bar*/
+    .topbar-right{
+      display:flex;
+      align-items:center;
+      gap:12px;
+    }
+
+    .lock-btn{
+      border:1px solid var(--line);
+      background:rgba(255,253,248,.8);
+      border-radius:999px;
+      padding:4px 10px;
+      font-size:12px;
+      cursor:pointer;
+      opacity:.65;
+    }
+
+    .lock-btn:hover{ opacity:1; }
+
+    @media(max-width:420px){
+      .pin-row{ gap:6px; }
+      .pin-row input{ width:40px; height:50px; font-size:20px; }
+      .lock-card{ padding:26px 18px; }
+    }
+
   </style>
 </head>
 
 <body>
 
+<!-- pin lock -->
+<div class="lock-screen" id="lockScreen">
+  <div class="lock-card" id="lockCard">
+    <div class="lock-heart">♡</div>
+    <h2>dublinspace</h2>
+    <p>what is our special day ♡</p>
+
+    <div class="pin-row">
+      <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="pin digit 1">
+      <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="pin digit 2">
+      <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="pin digit 3">
+      <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="pin digit 4">
+      <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="pin digit 5">
+      <input type="password" inputmode="numeric" maxlength="1" autocomplete="off" aria-label="pin digit 6">
+    </div>
+
+    <div class="lock-note" id="lockNote">enter your 6 digit pin</div>
+  </div>
+</div>
+
   <div class="topbar">
     <div class="brand" id="brandHeart">♡ dublinspace</div>
-    <div class="today" id="topDate">21 September 2026</div>
+    <div class="topbar-right">
+      <div class="today" id="topDate">21 September 2026</div>
+      <button class="lock-btn" id="lockButton" title="lock dublinspace">🔒</button>
+    </div>
   </div>
 
   <main class="home">
@@ -1214,9 +1417,27 @@
             hope you're having a good day over there ♡
           </p>
 
-          <div class="featured-polaroid">
-            <img src="photo4.jpg" alt="Us">
-            <div class="caption">us ♡</div>
+          <div class="polaroid-stack">
+
+            <div class="featured-polaroid stack-behind">
+              <img src="photo4.jpg" alt="Us">
+              <div class="caption">&nbsp;</div>
+            </div>
+
+            <div class="featured-polaroid featured-video">
+              <video
+                src="video2.mp4"
+                poster="photo4.jpg"
+                autoplay
+                loop
+                muted
+                playsinline
+                disablepictureinpicture
+                aria-label="a little video of us"
+              ></video>
+              <div class="caption">us ♡</div>
+            </div>
+
           </div>
 
           <div class="random-thought">
@@ -1261,7 +1482,14 @@
               <strong>Happy Birthday</strong>
               <span>21 September 2026</span>
             </div>
-            <div class="badge">NEW</div>
+          </button>
+
+          <button class="letter-card" id="hannahBirthdayCard">
+            <div class="mail">💌</div>
+            <div class="letter-info">
+              <strong>Happy 20th Birthday</strong>
+              <span>from quanyao · 23 October 2026</span>
+            </div>
           </button>
           <div class="coming-soon">more letters will live here ♡</div>
         </div>
@@ -1314,6 +1542,70 @@
 
           <div class="gallery-photo">
             <img src="photo6.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo7.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo8.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo9.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo10.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo11.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo12.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo13.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo14.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo15.png" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo16.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo17.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo18.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo19.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo20.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo21.jpg" alt="Us">
+          </div>
+
+          <div class="gallery-photo">
+            <img src="photo22.jpg" alt="Us">
           </div>
 
         </div>
@@ -1435,14 +1727,80 @@
       </div>
     </section>
 
+    <section class="window" id="hannahBirthdayWindow">
+      <div class="window-header">
+        <div class="window-title">happy birthday ♡</div>
+        <div class="window-controls">
+          <button onclick="closeWindow('hannahBirthdayWindow')" title="Close">×</button>
+        </div>
+      </div>
+
+      <div class="window-body">
+        <article class="letter-paper">
+          <div class="tiny-heart">♡</div>
+
+          <h1>happy birthday ♡</h1>
+
+          <p>
+            Dear Hannah, My Princess, My baby
+          </p>
+
+          <p>
+            Happy 20th birthday Princess! Even though I am not in Singapore and i cant be with you physically, I am always with you. Every single moment
+            of every single second of each day here, i am thinking of you and counting down the time i have left for me to come back and see you. There is
+            nothing i am missing more while I am here than you. Every single time i go to the store I'm thinking of what i can buy and bring back for you
+            to enjoy. And every time i go out, I'm thinking about how nice it would be to have you here with me.
+          </p>
+
+          <p>
+            I'm sorry I really am a bad BF, and that I always make u feel bad and cry... or that my actions show that i do not love you or put you high up
+            in my priority. But I promise you! you really are the most important thing to me and I would drop anything to spend more time with you.
+            Its not fair that i always promise you that i will improve and get better, but still end up disappointing you. I really am trying my best to
+            improve and I just hope it will be enough.
+          </p>
+
+          <p>
+            I hope this wasn't too late. I hope you will enjoy your birthday present, and I promise i will make your 21st birthday better.
+          </p>
+
+          <div class="polaroid-row">
+
+            <div class="polaroid">
+              <img src="photo18.jpg" alt="Us together">
+              <div class="caption"></div>
+            </div>
+
+            <div class="polaroid">
+              <img src="photo20.jpg" alt="Us together">
+              <div class="caption"></div>
+            </div>
+
+          </div>
+
+          <p>
+            I miss you so much and I really wish I could teleport right now.
+          </p>
+
+          <p>
+            I love you more than anything. Happy birthday Baby! ♡
+          </p>
+
+          <p class="signature">
+            Love,<br>
+            QuanYao
+          </p>
+        </article>
+      </div>
+    </section>
+
     <div class="easter-egg" id="easterEgg">
-      you belong to me ♡
+      Please don't be angry anymore:( ♡
     </div>
 
     <div class="notification" id="notification">
       <div class="notification-copy">
-        <strong>💌 new letter</strong>
-        <span>hannah left you something ♡</span>
+        <strong>💌 You've got mail!</strong>
+        <span>Quanyao is really sorry... ♡</span>
       </div>
       <button class="soft-btn" id="openNotification">open</button>
     </div>
@@ -1534,8 +1892,161 @@
   <span class="float-heart h5">♡</span>
 </div>
 
+<!-- surprise page for the 23 october letter -->
+<div id="hannahBirthdayPopup" class="birthday-popup">
+  <div class="birthday-content">
+
+    <div class="birthday-cake">🎂</div>
+
+    <div class="polaroid-row surprise-row">
+
+      <div class="polaroid">
+        <video
+          id="surpriseVideo"
+          src="video1.mp4"
+          loop
+          muted
+          playsinline
+          preload="metadata"
+          disablepictureinpicture
+          aria-label="a little video for you"
+        ></video>
+        <div class="caption">♡</div>
+      </div>
+
+      <div class="polaroid">
+        <img src="photo20.jpg" alt="Us together">
+        <div class="caption">♡</div>
+      </div>
+
+    </div>
+
+    <p>Happy Birthday!</p>
+    <button id="continueHannahBirthday" class="birthday-button">open your letter ♡</button>
+  </div>
+  <span class="float-heart h1">♡</span>
+  <span class="float-heart h2">♡</span>
+  <span class="float-heart h3">♡</span>
+  <span class="float-heart h4">♡</span>
+  <span class="float-heart h5">♡</span>
+</div>
+
 
   <script>
+    // ---------- pin lock ----------
+    // the pin itself is never stored here, only this hash of it.
+    // to change the pin: unlock the site, open the browser console and run
+    //   dsPinHash("your new 6 digits").then(console.log)
+    // then paste what it prints in as PIN_HASH below.
+    const PIN_SALT = "dublinspace:";
+    const PIN_HASH = "7ef41f57f1e8f492e808bd5a2e4ba1c10b5ba61f5532c752c69b62c58b1ecb86";
+    const UNLOCK_KEY = "dublinspace-unlocked";
+
+    const lockScreen = document.getElementById("lockScreen");
+    const lockCard = document.getElementById("lockCard");
+    const lockNote = document.getElementById("lockNote");
+    const pinInputs = [...document.querySelectorAll(".pin-row input")];
+
+    async function dsPinHash(pin){
+      const bytes = new TextEncoder().encode(PIN_SALT + pin);
+      const digest = await crypto.subtle.digest("SHA-256", bytes);
+      return [...new Uint8Array(digest)]
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+    }
+
+    // keeps the blurred page unreachable by tab/screen reader too, not just by mouse
+    function setBackgroundInert(on){
+      [...document.body.children].forEach(el => {
+        if(el !== lockScreen) el.inert = on;
+      });
+    }
+
+    function unlockSite(remember){
+      if(remember){
+        try{ localStorage.setItem(UNLOCK_KEY, PIN_HASH); }catch(e){}
+      }
+      setBackgroundInert(false);
+      document.documentElement.classList.remove("locked");
+    }
+
+    function lockSite(){
+      try{ localStorage.removeItem(UNLOCK_KEY); }catch(e){}
+      document.documentElement.classList.add("locked");
+      setBackgroundInert(true);
+      pinInputs.forEach(input => input.value = "");
+      lockNote.classList.remove("error");
+      lockNote.textContent = "enter your 6 digit pin";
+      pinInputs[0].focus();
+    }
+
+    function typedPin(){
+      return pinInputs.map(input => input.value).join("");
+    }
+
+    async function checkPin(){
+      const pin = typedPin();
+      if(pin.length < 6) return;
+
+      lockNote.classList.remove("error");
+      lockNote.textContent = "checking...";
+
+      if(await dsPinHash(pin) === PIN_HASH){
+        lockNote.textContent = "welcome back ♡";
+        unlockSite(true);
+        return;
+      }
+
+      lockCard.classList.add("shake");
+      setTimeout(() => lockCard.classList.remove("shake"), 400);
+      lockNote.classList.add("error");
+      lockNote.textContent = "hmm, that's not it ♡ try again";
+      pinInputs.forEach(input => input.value = "");
+      pinInputs[0].focus();
+    }
+
+    pinInputs.forEach((input, index) => {
+      input.addEventListener("input", () => {
+        input.value = input.value.replace(/\D/g, "").slice(-1);
+        if(input.value && index < pinInputs.length - 1){
+          pinInputs[index + 1].focus();
+        }
+        if(typedPin().length === 6) checkPin();
+      });
+
+      input.addEventListener("keydown", e => {
+        if(e.key === "Backspace" && !input.value && index > 0){
+          e.preventDefault();
+          pinInputs[index - 1].value = "";
+          pinInputs[index - 1].focus();
+        }
+        if(e.key === "ArrowLeft" && index > 0) pinInputs[index - 1].focus();
+        if(e.key === "ArrowRight" && index < pinInputs.length - 1) pinInputs[index + 1].focus();
+        if(e.key === "Enter") checkPin();
+      });
+
+      input.addEventListener("paste", e => {
+        const digits = (e.clipboardData.getData("text") || "").replace(/\D/g, "").slice(0, 6);
+        if(!digits) return;
+        e.preventDefault();
+        digits.split("").forEach((digit, i) => pinInputs[i].value = digit);
+        pinInputs[Math.min(digits.length, pinInputs.length - 1)].focus();
+        if(digits.length === 6) checkPin();
+      });
+    });
+
+    document.getElementById("lockButton").addEventListener("click", lockSite);
+
+    let remembered = null;
+    try{ remembered = localStorage.getItem(UNLOCK_KEY); }catch(e){}
+
+    if(remembered === PIN_HASH){
+      unlockSite(false);
+    } else {
+      setBackgroundInert(true);
+      setTimeout(() => pinInputs[0].focus(), 50);
+    }
+
     // ---------- time format ----------
     function twoDigit12Hour(parts) {
       const hourPart = parts.find(p => p.type === "hour")?.value || "12";
@@ -1663,7 +2174,13 @@
       "“i miss you soooo much”",
       "“you better be sleeping if it's late there”",
       "“do u love me :3”",
-      "“don't skip any mealsssss”"
+      "“don't skip any mealsssss”",
+      "“Dont be angry anymore okkk bb”",
+      "“U look more beautifull than usual”",
+      "“How's work going?”",
+      "“What Chu doin now?”",
+      "“Have you eaten breakfast?”",
+      "“Did you drink enough water today?”"
     ];
 
     function chooseThought(){
@@ -1684,6 +2201,23 @@
 
     document.getElementById("birthdayCard").addEventListener("click", () => {
       birthdayPopup.classList.add("show");
+    });
+
+    const hannahBirthdayPopup = document.getElementById("hannahBirthdayPopup");
+    const surpriseVideo = document.getElementById("surpriseVideo");
+
+    document.getElementById("hannahBirthdayCard").addEventListener("click", () => {
+      hannahBirthdayPopup.classList.add("show");
+      // it is not preloaded or autoplaying, so start it from the top on the way in
+      surpriseVideo.currentTime = 0;
+      surpriseVideo.play().catch(() => {});
+    });
+
+    document.getElementById("continueHannahBirthday").addEventListener("click", () => {
+      hannahBirthdayPopup.classList.remove("show");
+      surpriseVideo.pause();
+      showView("lettersView");
+      openWindow("hannahBirthdayWindow");
     });
 
     document.getElementById("continueBirthday").addEventListener("click", () => {
