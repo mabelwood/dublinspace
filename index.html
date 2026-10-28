@@ -1369,6 +1369,176 @@
       .lock-card{ padding:26px 18px; }
     }
 
+  /* ---------- OUR CALENDAR ---------- */
+
+    #calendarView {
+      overflow-y: auto;
+    }
+
+    .calendar-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+
+    .calendar-toolbar h3 {
+      font-size: 21px;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    .calendar-toolbar button {
+      width: 34px;
+      height: 34px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      background: var(--paper);
+      cursor: pointer;
+      font-size: 22px;
+    }
+
+    .calendar-weekdays,
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 5px;
+    }
+
+    .calendar-weekdays {
+      text-align: center;
+      font-size: 11px;
+      opacity: .6;
+      margin-bottom: 8px;
+    }
+
+    .calendar-day {
+      min-height: 54px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(255,250,243,.7);
+      cursor: pointer;
+      font-size: 13px;
+    }
+
+    .calendar-day:hover,
+    .calendar-day.selected {
+      background: var(--pink-soft);
+    }
+
+    .calendar-day.today {
+      border: 2px solid var(--pink);
+    }
+
+    .calendar-day.empty {
+      background: transparent;
+      border: none;
+      cursor: default;
+    }
+
+    .calendar-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 17px 0;
+      font-size: 12px;
+    }
+
+    .calendar-day-details {
+      border-top: 1px solid var(--line);
+      padding-top: 18px;
+    }
+
+    .calendar-day-details h3 {
+      font-weight: 500;
+    }
+
+    #calendarEvents {
+      margin-bottom: 14px;
+    }
+
+    @media (max-width: 480px) {
+      .calendar-day {
+        min-height: 42px;
+        font-size: 11px;
+      }
+
+      .calendar-weekdays,
+      .calendar-grid {
+        gap: 3px;
+      }
+    }
+
+    /* calendar event indicators */
+
+    .calendar-event-dots {
+      display: flex;
+      justify-content: center;
+      gap: 3px;
+      margin-top: 5px;
+      flex-wrap: wrap;
+    }
+
+    .calendar-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .calendar-dot.hannah {
+      background: #d9a6a6;
+    }
+
+    .calendar-dot.quanyao {
+      background: #a4b9cf;
+    }
+
+    .calendar-dot.both {
+      background: #b6a5c6;
+    }
+
+    .calendar-event-card {
+      padding: 12px 15px;
+      border-radius: 12px;
+      margin-bottom: 9px;
+      font-size: 13px;
+      border-left: 4px solid;
+      background: rgba(255,250,243,.8);
+    }
+
+    .calendar-event-card.hannah {
+      border-color: #d9a6a6;
+    }
+
+    .calendar-event-card.quanyao {
+      border-color: #a4b9cf;
+    }
+
+    .calendar-event-card.both {
+      border-color: #b6a5c6;
+    }
+  
+
+    /* Add-on only: shared calendar forms and account controls */
+    .ds-calendar-account {display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin:0 0 18px;font-size:12px;color:var(--muted)}
+    .ds-calendar-account button,.ds-event-actions button {border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 11px;cursor:pointer}
+    .ds-event-actions {display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}
+    .ds-event-meta {font-size:12px;opacity:.7;margin-top:5px;line-height:1.6}
+    .ds-calendar-overlay {position:fixed;inset:0;z-index:9998;background:rgba(93,70,54,.28);display:none;align-items:center;justify-content:center;padding:18px}
+    .ds-calendar-overlay.show {display:flex}
+    .ds-calendar-dialog {width:min(440px,100%);max-height:calc(100vh - 36px);overflow-y:auto;background:var(--paper);border:1px solid var(--line);border-radius:22px;box-shadow:var(--shadow);padding:23px}
+    .ds-calendar-dialog h3 {margin:0 0 14px;font-weight:500;font-size:24px}
+    .ds-calendar-dialog label {display:block;font-size:12px;margin:12px 0 5px;color:var(--muted)}
+    .ds-calendar-dialog input,.ds-calendar-dialog select {width:100%;font:inherit;color:var(--brown);border:1px solid var(--line);border-radius:11px;padding:10px;background:#fffdf8}
+    .ds-calendar-check {display:flex;align-items:center;gap:8px;margin:12px 0}
+    .ds-calendar-check input {width:auto}
+    .ds-calendar-check label {margin:0}
+    .ds-calendar-buttons {display:flex;gap:9px;justify-content:flex-end;margin-top:20px}
+    .ds-calendar-buttons button {border:1px solid var(--line);border-radius:999px;padding:9px 14px;background:var(--paper);cursor:pointer}
+    .ds-calendar-buttons .ds-primary {background:var(--pink-soft)}
+    .ds-calendar-feedback {min-height:17px;font-size:12px;color:#a44d4d;margin-top:10px}
+    .ds-calendar-help {font-size:12px;opacity:.75;line-height:1.6}
+
   </style>
 </head>
 
@@ -1463,6 +1633,44 @@
 
         <div class="memo-grid" id="memoGrid"></div>
         <div class="coming-soon">add as many little plans as you want ♡</div>
+      </div>
+
+      <!-- calendar -->
+      <div class="stage-view calendar-view" id="calendarView">
+        <div class="view-header">
+          <div>
+            <h2>Our Calendar ♡</h2>
+            <p>two schedules, one little space.</p>
+          </div>
+          <button class="back-home" onclick="showView('homeView')">← home</button>
+        </div>
+
+        <div class="calendar-toolbar">
+          <button id="prevMonth">‹</button>
+          <h3 id="calendarMonth"></h3>
+          <button id="nextMonth">›</button>
+        </div>
+
+        <div class="calendar-weekdays">
+          <span>Mon</span><span>Tue</span><span>Wed</span>
+          <span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+        </div>
+
+        <div class="calendar-grid" id="calendarGrid"></div>
+
+        <div class="calendar-legend">
+          <span>🌸 Hannah</span>
+          <span>🩵 Quan Yao</span>
+          <span>💜 Us</span>
+        </div>
+
+        <div class="calendar-day-details">
+          <h3 id="selectedDateTitle"></h3>
+          <div id="calendarEvents"></div>
+          <button class="add-memo-btn" id="addEventButton">
+            + add an event ♡
+          </button>
+        </div>
       </div>
 
       <!-- letters -->
@@ -1649,7 +1857,7 @@
       <button class="rail-btn" id="somedayRail" data-label="someday" onclick="showView('somedayView')">♡</button>
       <button class="rail-btn" id="lettersRail" data-label="letters" onclick="showView('lettersView')">💌</button>
       <button class="rail-btn" id="photosRail" data-label="photos" onclick="showView('photosView')">📷</button>
-      <button class="rail-btn rail-placeholder" data-label="songs · someday">♫</button>
+      <button class="rail-btn" id="calendarRail" data-label="calendar" onclick="showView('calendarView')">📅</button>
     </nav>
 
     <!-- bday letter window -->
@@ -1877,6 +2085,35 @@
 
 </div>
   
+
+<!-- Add-on only: Firebase calendar sign-in and event editor -->
+<div class="ds-calendar-overlay" id="dsCalendarLoginOverlay" role="dialog" aria-modal="true" aria-labelledby="dsLoginTitle">
+  <form class="ds-calendar-dialog" id="dsCalendarLoginForm">
+    <h3 id="dsLoginTitle">our shared calendar ♡</h3>
+    <p class="ds-calendar-help">One-time sign-in on this browser ♡ After that, your calendar account stays connected when you unlock dublinspace with your usual PIN.</p>
+    <label for="dsCalendarEmail">email</label><input id="dsCalendarEmail" type="email" autocomplete="username" required>
+    <label for="dsCalendarPassword">password</label><input id="dsCalendarPassword" type="password" autocomplete="current-password" required>
+    <div class="ds-calendar-feedback" id="dsLoginError" role="status"></div>
+    <div class="ds-calendar-buttons"><button type="button" data-ds-close="dsCalendarLoginOverlay">cancel</button><button type="submit" class="ds-primary" id="dsLoginSubmit">sign in ♡</button></div>
+  </form>
+</div>
+<div class="ds-calendar-overlay" id="dsCalendarEventOverlay" role="dialog" aria-modal="true" aria-labelledby="dsEventFormTitle">
+  <form class="ds-calendar-dialog" id="dsCalendarEventForm">
+    <h3 id="dsEventFormTitle">add a little plan ♡</h3>
+    <label for="dsEventTitle">what's the plan?</label><input id="dsEventTitle" maxlength="160" placeholder="a little date night ♡" required>
+    <label for="dsEventDate">date</label><input id="dsEventDate" type="date" required>
+    <label for="dsEventOwner">whose plan?</label><select id="dsEventOwner"><option value="hannah">🌸 Hannah</option><option value="quanyao">🩵 Quan Yao</option><option value="both">💜 Us</option></select>
+    <div class="ds-calendar-check"><input id="dsEventAllDay" type="checkbox" checked><label for="dsEventAllDay">all-day event</label></div>
+    <div id="dsEventTimeFields" hidden>
+      <label for="dsEventTime">start time</label><input id="dsEventTime" type="time" value="19:00">
+      <label for="dsEventTimezone">time is in</label><select id="dsEventTimezone"><option value="Asia/Singapore">🇸🇬 Singapore time</option><option value="America/New_York">🇺🇸 Philadelphia time</option></select>
+      <p class="ds-calendar-help">We'll show the corresponding time in both places. The event stays on the date you select in its chosen time zone.</p>
+    </div>
+    <div class="ds-calendar-feedback" id="dsEventError" role="status"></div>
+    <div class="ds-calendar-buttons"><button type="button" data-ds-close="dsCalendarEventOverlay">cancel</button><button type="submit" class="ds-primary" id="dsEventSubmit">save plan ♡</button></div>
+  </form>
+</div>
+
 <!-- birthday popup -->
 <div id="birthdayPopup" class="birthday-popup">
   <div class="birthday-content">
@@ -1932,6 +2169,41 @@
 </div>
 
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      onAuthStateChanged
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+
+    import {
+      getFirestore,
+      collection,
+      addDoc,
+      getDocs,
+      onSnapshot,
+      updateDoc,
+      deleteDoc,
+      doc
+    } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyBaOcuFtAbqV5IQvokQehobq98JJmx0JWE",
+      authDomain: "dublinspace-bc30c.firebaseapp.com",
+      projectId: "dublinspace-bc30c",
+      storageBucket: "dublinspace-bc30c.firebasestorage.app",
+      messagingSenderId: "652634722711",
+      appId: "1:652634722711:web:9e44902cb91489058534d2"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    console.log("Firebase initialized ♡");
+  </script>
   <script>
     // ---------- pin lock ----------
     // the pin itself is never stored here, only this hash of it.
@@ -2131,7 +2403,8 @@
         homeView:"homeRail",
         somedayView:"somedayRail",
         lettersView:"lettersRail",
-        photosView:"photosRail"
+        photosView:"photosRail",
+        calendarView:"calendarRail"
       };
 
       if(railMap[viewId]){
@@ -2368,6 +2641,157 @@
 
     loadMemos();
 
+    // ---------- OUR CALENDAR ----------
+
+    let calendarDate = new Date();
+    let selectedCalendarDate = new Date();
+
+    // Temporary events for testing the calendar.
+    // We'll replace this with Firebase data later.
+    let calendarEvents = [
+      {
+        id: "test-event",
+        title: "our first calendar event ♡",
+        date: "2026-10-29",
+        owner: "both",
+        allDay: true
+      }
+    ];
+
+    function calendarDateKey(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function renderCalendar() {
+      const year = calendarDate.getFullYear();
+      const month = calendarDate.getMonth();
+
+      document.getElementById("calendarMonth").textContent =
+        new Intl.DateTimeFormat("en-GB", {
+          month: "long",
+          year: "numeric"
+        }).format(calendarDate);
+
+      const grid = document.getElementById("calendarGrid");
+      grid.innerHTML = "";
+
+      // Monday-first calendar
+      const firstDay = new Date(year, month, 1);
+      const offset = (firstDay.getDay() + 6) % 7;
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+      for (let i = 0; i < offset; i++) {
+        const empty = document.createElement("div");
+        empty.className = "calendar-day empty";
+        grid.appendChild(empty);
+      }
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const date = new Date(year, month, day);
+        const key = calendarDateKey(date);
+
+        const button = document.createElement("button");
+        button.className = "calendar-day";
+        button.type = "button";
+
+        if (key === calendarDateKey(new Date())) {
+          button.classList.add("today");
+        }
+
+        if (key === calendarDateKey(selectedCalendarDate)) {
+          button.classList.add("selected");
+        }
+
+        const number = document.createElement("div");
+        number.textContent = day;
+        button.appendChild(number);
+
+        const eventsForDay = calendarEvents.filter(
+          event => event.date === key
+        );
+
+        if (eventsForDay.length > 0) {
+          const dots = document.createElement("div");
+          dots.className = "calendar-event-dots";
+
+          eventsForDay.forEach(event => {
+            const dot = document.createElement("span");
+            dot.className = `calendar-dot ${event.owner}`;
+            dots.appendChild(dot);
+          });
+
+          button.appendChild(dots);
+        }
+
+        button.addEventListener("click", () => {
+          selectedCalendarDate = date;
+          renderCalendar();
+        });
+
+        grid.appendChild(button);
+      }
+
+      renderSelectedCalendarDay();
+    }
+
+    function renderSelectedCalendarDay() {
+      const key = calendarDateKey(selectedCalendarDate);
+
+      document.getElementById("selectedDateTitle").textContent =
+        new Intl.DateTimeFormat("en-GB", {
+          weekday: "long",
+          day: "numeric",
+          month: "long"
+        }).format(selectedCalendarDate);
+
+      const container = document.getElementById("calendarEvents");
+      container.innerHTML = "";
+
+      const eventsForDay = calendarEvents.filter(
+        event => event.date === key
+      );
+
+      if (eventsForDay.length === 0) {
+        const empty = document.createElement("p");
+        empty.textContent = "nothing planned yet ♡";
+        empty.style.opacity = ".6";
+        container.appendChild(empty);
+        return;
+      }
+
+      eventsForDay.forEach(event => {
+        const item = document.createElement("div");
+        item.className = `calendar-event-card ${event.owner}`;
+        item.textContent = event.title;
+        container.appendChild(item);
+      });
+    }
+
+    document.getElementById("prevMonth").addEventListener("click", () => {
+      calendarDate.setMonth(calendarDate.getMonth() - 1);
+      selectedCalendarDate = new Date(
+        calendarDate.getFullYear(),
+        calendarDate.getMonth(),
+        1
+      );
+      renderCalendar();
+    });
+
+    document.getElementById("nextMonth").addEventListener("click", () => {
+      calendarDate.setMonth(calendarDate.getMonth() + 1);
+      selectedCalendarDate = new Date(
+        calendarDate.getFullYear(),
+        calendarDate.getMonth(),
+        1
+      );
+      renderCalendar();
+    });
+
+    renderCalendar();
+
     // ---------- easter egg ----------
     const egg = document.getElementById("easterEgg");
 
@@ -2376,6 +2800,218 @@
       setTimeout(() => egg.classList.remove("show"), 2500);
     });
   </script>
+
+
+<script type="module">
+// Add-on only: shared calendar functionality. Existing website JS remains untouched.
+import { getApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, onSnapshot, updateDoc, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+const dsApp = getApp();
+const dsAuth = getAuth(dsApp);
+const dsDb = getFirestore(dsApp);
+const dsEventsRef = collection(dsDb, "calendar_events");
+const dsEl = id => document.getElementById(id);
+const dsLoginOverlay = dsEl("dsCalendarLoginOverlay");
+const dsEventOverlay = dsEl("dsCalendarEventOverlay");
+const dsAddButton = dsEl("addEventButton");
+const dsAccount = document.createElement("div");
+dsAccount.className = "ds-calendar-account";
+dsEl("calendarView").insertBefore(dsAccount, dsEl("calendarView").querySelector(".calendar-toolbar"));
+let dsUser = null;
+let dsUnsubscribe = null;
+let dsEditingId = null;
+let dsEvents = [];
+
+function dsAccountStatus(message) {
+  dsAccount.replaceChildren();
+  const span = document.createElement("span");
+  span.textContent = message;
+  dsAccount.appendChild(span);
+  const button = document.createElement("button");
+  button.type = "button";
+  button.textContent = dsUser ? "sign out" : "sign in ♡";
+  button.addEventListener("click", async () => {
+    if (dsUser) {
+      try { await signOut(dsAuth); } catch (err) { alert("Could not sign out: " + err.message); }
+    } else dsLoginOverlay.classList.add("show");
+  });
+  dsAccount.appendChild(button);
+}
+
+function dsRefreshCalendar() {
+  // The original calendar rendering functions and date navigation are reused.
+  calendarEvents = dsEvents;
+  renderCalendar();
+}
+
+// Extend only the selected-day display; retain the original date grid and its styling.
+const dsOriginalRenderDay = renderSelectedCalendarDay;
+renderSelectedCalendarDay = function () {
+  dsOriginalRenderDay();
+  const key = calendarDateKey(selectedCalendarDate);
+  const cards = dsEl("calendarEvents").querySelectorAll(".calendar-event-card");
+  const dayEvents = calendarEvents.filter(event => event.date === key);
+  cards.forEach((card, i) => {
+    const event = dayEvents[i];
+    if (!event) return;
+    const ownerText = {hannah:"🌸 Hannah",quanyao:"🩵 Quan Yao",both:"💜 Us"}[event.owner] || "💜 Us";
+    const meta = document.createElement("div");
+    meta.className = "ds-event-meta";
+    meta.textContent = ownerText + (event.allDay !== false ? " · all day" : dsTimeDescription(event));
+    card.appendChild(meta);
+    if (!dsUser) return;
+    const actions = document.createElement("div");
+    actions.className = "ds-event-actions";
+    const edit = document.createElement("button");
+    edit.type = "button";
+    edit.textContent = "edit ✎";
+    edit.addEventListener("click", () => dsOpenEventForm(event));
+    const remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "delete ×";
+    remove.addEventListener("click", async () => {
+      if (!confirm(`Delete "${event.title}"?`)) return;
+      try { await deleteDoc(doc(dsDb, "calendar_events", event.id)); }
+      catch (err) { alert("Couldn't delete this plan: " + err.message); }
+    });
+    actions.append(edit, remove);
+    card.appendChild(actions);
+  });
+};
+
+function dsZoneOffset(instant, zone) {
+  const parts = new Intl.DateTimeFormat("en-GB", {
+    timeZone: zone, year:"numeric",month:"2-digit",day:"2-digit",
+    hour:"2-digit",minute:"2-digit",second:"2-digit",hourCycle:"h23"
+  }).formatToParts(new Date(instant));
+  const p = Object.fromEntries(parts.map(item => [item.type,item.value]));
+  return Date.UTC(+p.year,+p.month-1,+p.day,+p.hour,+p.minute,+p.second) - instant;
+}
+function dsWallToUTC(date, time, zone) {
+  const [y,m,d] = date.split("-").map(Number);
+  const [h,min] = time.split(":").map(Number);
+  const wall = Date.UTC(y,m-1,d,h,min,0);
+  let result = wall - dsZoneOffset(wall,zone);
+  result = wall - dsZoneOffset(result,zone);
+  // DST gaps are not valid local times; reject rather than silently shift them.
+  const actual = new Intl.DateTimeFormat("en-CA", {
+    timeZone:zone,year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"
+  }).formatToParts(new Date(result));
+  const p = Object.fromEntries(actual.map(item => [item.type,item.value]));
+  if (`${p.year}-${p.month}-${p.day}` !== date || `${p.hour}:${p.minute}` !== time) throw new Error("That local time doesn't exist due to a clock change. Please choose another time.");
+  return new Date(result).toISOString();
+}
+function dsTimeDescription(event) {
+  if (!event.startUTC) return event.time ? ` · ${event.time} (${event.timezone === "America/New_York" ? "Philadelphia" : "Singapore"})` : "";
+  const date = new Date(event.startUTC);
+  const format = zone => new Intl.DateTimeFormat("en-GB", {
+    timeZone:zone,month:"short",day:"numeric",hour:"numeric",minute:"2-digit",hour12:true
+  }).format(date);
+  return ` · 🇸🇬 ${format("Asia/Singapore")} · 🇺🇸 ${format("America/New_York")}`;
+}
+function dsOpenEventForm(event = null) {
+  if (!dsUser) { dsLoginOverlay.classList.add("show"); return; }
+  dsEditingId = event?.id || null;
+  dsEl("dsEventFormTitle").textContent = event ? "edit our plan ♡" : "add a little plan ♡";
+  dsEl("dsEventTitle").value = event?.title || "";
+  dsEl("dsEventDate").value = event?.date || calendarDateKey(selectedCalendarDate);
+  dsEl("dsEventOwner").value = ["hannah","quanyao","both"].includes(event?.owner) ? event.owner : "both";
+  dsEl("dsEventAllDay").checked = event?.allDay !== false;
+  dsEl("dsEventTime").value = event?.time || "19:00";
+  dsEl("dsEventTimezone").value = event?.timezone === "America/New_York" ? "America/New_York" : "Asia/Singapore";
+  dsEl("dsEventTimeFields").hidden = dsEl("dsEventAllDay").checked;
+  dsEl("dsEventError").textContent = "";
+  dsEventOverlay.classList.add("show");
+  dsEl("dsEventTitle").focus();
+}
+
+dsEl("dsEventAllDay").addEventListener("change", () => { dsEl("dsEventTimeFields").hidden = dsEl("dsEventAllDay").checked; });
+dsAddButton.addEventListener("click", () => dsOpenEventForm());
+for (const button of document.querySelectorAll("[data-ds-close]")) {
+  button.addEventListener("click", () => dsEl(button.dataset.dsClose).classList.remove("show"));
+}
+for (const overlay of [dsLoginOverlay,dsEventOverlay]) {
+  overlay.addEventListener("click", e => { if (e.target === overlay) overlay.classList.remove("show"); });
+}
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") { dsLoginOverlay.classList.remove("show"); dsEventOverlay.classList.remove("show"); }
+});
+
+dsEl("dsCalendarLoginForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const button = dsEl("dsLoginSubmit");
+  button.disabled = true;
+  dsEl("dsLoginError").textContent = "";
+  try {
+    // Remember the Firebase account on this browser, independently of the six-digit site PIN.
+    await setPersistence(dsAuth, browserLocalPersistence);
+    await signInWithEmailAndPassword(dsAuth, dsEl("dsCalendarEmail").value.trim(), dsEl("dsCalendarPassword").value);
+    dsEl("dsCalendarPassword").value = "";
+    dsLoginOverlay.classList.remove("show");
+  } catch (err) {
+    dsEl("dsLoginError").textContent = "Couldn't sign in. Check your email and password, then try again.";
+    console.error("Calendar sign-in:",err.code);
+  } finally { button.disabled = false; }
+});
+
+dsEl("dsCalendarEventForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  if (!dsUser) { dsEventOverlay.classList.remove("show"); dsLoginOverlay.classList.add("show"); return; }
+  const button = dsEl("dsEventSubmit");
+  button.disabled = true;
+  dsEl("dsEventError").textContent = "";
+  try {
+    const allDay = dsEl("dsEventAllDay").checked;
+    const title = dsEl("dsEventTitle").value.trim();
+    const date = dsEl("dsEventDate").value;
+    const owner = dsEl("dsEventOwner").value;
+    if (!title || !/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error("Please enter a title and valid date.");
+    const time = allDay ? "" : dsEl("dsEventTime").value;
+    const timezone = dsEl("dsEventTimezone").value;
+    if (!allDay && !time) throw new Error("Please select a start time.");
+    const startUTC = allDay ? "" : dsWallToUTC(date,time,timezone);
+    const data = {title,date,owner,allDay,time,timezone,startUTC};
+    if (dsEditingId) await updateDoc(doc(dsDb,"calendar_events",dsEditingId),data);
+    else await addDoc(dsEventsRef,data);
+    dsEventOverlay.classList.remove("show");
+    const [y,m,d] = date.split("-").map(Number);
+    selectedCalendarDate = new Date(y,m-1,d);
+    calendarDate = new Date(y,m-1,1);
+    dsRefreshCalendar();
+  } catch (err) {
+    dsEl("dsEventError").textContent = err.message || "Couldn't save this plan. Please try again.";
+    console.error("Calendar save:",err);
+  } finally { button.disabled = false; }
+});
+
+onAuthStateChanged(dsAuth, user => {
+  if (dsUnsubscribe) { dsUnsubscribe(); dsUnsubscribe = null; }
+  dsUser = user;
+  dsEvents = [];
+  dsRefreshCalendar(); // removes the old hardcoded October 29 test event
+  if (!user) {
+    dsAccountStatus("first time on this browser? sign in once to sync our plans ♡");
+    dsAddButton.textContent = "+ sign in to add an event ♡";
+    return;
+  }
+  dsAccountStatus("shared calendar · connected ♡");
+  dsAddButton.textContent = "+ add an event ♡";
+  dsUnsubscribe = onSnapshot(dsEventsRef, snapshot => {
+    dsEvents = snapshot.docs.map(record => ({id:record.id,...record.data()}))
+      .filter(event => typeof event.date === "string" && typeof event.title === "string")
+      .sort((a,b) => a.date.localeCompare(b.date) || (a.time || "").localeCompare(b.time || ""));
+    dsRefreshCalendar();
+    dsAccountStatus("shared calendar · synced ♡");
+  }, err => {
+    dsEvents = [];
+    dsRefreshCalendar();
+    dsAccountStatus("calendar couldn't sync — check account access or Firestore rules");
+    console.error("Calendar sync:",err);
+  });
+});
+</script>
 
 </body>
 </html>
