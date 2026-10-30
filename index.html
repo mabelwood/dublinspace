@@ -3220,6 +3220,7 @@ onAuthStateChanged(auth,current=>{
   <h2 id="dsLetterHeading">write a letter ♡</h2>
   <form id="dsLetterForm">
    <label for="dsLetterTitle">title</label><input id="dsLetterTitle" maxlength="160" required placeholder="to my favourite person ♡">
+   <label for="dsLetterDate">letter date ♡</label><input type="date" id="dsLetterDate" required>
    <label for="dsLetterBody">your letter</label><textarea id="dsLetterBody" required placeholder="Dear you..."></textarea>
    <p id="dsLetterError" role="status"></p>
    <div class="ds-letter-actions"><button type="button" id="dsLetterClose">close</button><button type="button" id="dsLetterDelete" class="ds-letter-danger" hidden>delete</button><button type="button" id="dsLetterSaveDraft">save private draft</button><button type="submit" id="dsLetterPublish">publish ♡</button></div>
@@ -3235,18 +3236,23 @@ const app=getApp(),auth=getAuth(app),db=getFirestore(app),letters=collection(db,
 const $=id=>document.getElementById(id);
 let currentUser=null,unsubPublished=null,unsubOwn=null,allLetters=[],publishedLetters=[],ownLetters=[],editingId=null;
 const overlay=$("dsLetterOverlay"),form=$("dsLetterForm"),error=$("dsLetterError");
+const integratedLetters=document.createElement("div");integratedLetters.id="dsIntegratedLetters";document.querySelector("#lettersView .coming-soon")?.before(integratedLetters);
 function close(){overlay.classList.remove("show");}
 function show(){overlay.classList.add("show");error.textContent="";}
-function startEdit(letter=null){if(!currentUser)return;editingId=letter?.id||null;$("dsLetterHeading").textContent=letter?"edit your letter ♡":"write a letter ♡";$("dsLetterTitle").value=letter?.title||"";$("dsLetterBody").value=letter?.body||"";$("dsLetterDelete").hidden=!letter;$("dsLetterSaveDraft").textContent=letter?.status==="published"?"unpublish to drafts":"save private draft";form.hidden=false;$("dsLetterRead").hidden=true;show();}
+function localDateFromDate(d){const off=d.getTimezoneOffset();return new Date(d.getTime()-off*60000).toISOString().slice(0,10);}
+function localDateToday(){return localDateFromDate(new Date());}
+function startEdit(letter=null){if(!currentUser)return;editingId=letter?.id||null;$("dsLetterHeading").textContent=letter?"edit your letter ♡":"write a letter ♡";$("dsLetterTitle").value=letter?.title||"";$("dsLetterBody").value=letter?.body||"";$("dsLetterDate").value=letter?.letterDate||(letter?.createdAt?.toDate?.()?localDateFromDate(letter.createdAt.toDate()):localDateToday());$("dsLetterDelete").hidden=!letter;$("dsLetterSaveDraft").textContent=letter?.status==="published"?"unpublish to drafts":"save private draft";form.hidden=false;$("dsLetterRead").hidden=true;show();}
 function readLetter(letter){$("dsLetterHeading").textContent=letter.title;$("dsLetterReadBody").textContent=letter.body;form.hidden=true;$("dsLetterRead").hidden=false;show();}
 function dateText(ts){return ts?.toDate?.().toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"})||"just now";}
+function letterDateText(l){if(l.letterDate && /^\d{4}-\d{2}-\d{2}$/.test(l.letterDate)){const [y,m,d]=l.letterDate.split("-").map(Number);return new Date(y,m-1,d).toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"});}return dateText(l.createdAt||l.updatedAt);}
 function render(){const pub=$("dsLettersPublished"),draft=$("dsLettersDrafts");pub.replaceChildren();draft.replaceChildren();const signed=!!currentUser;$("dsNewLetter").disabled=!signed;$("dsLettersStatus").textContent=signed?"published letters are shared · drafts are just yours ♡":"sign in using our calendar account to access letters ♡";
  const sorted=[...allLetters].sort((a,b)=>(b.updatedAt?.seconds||b.createdAt?.seconds||0)-(a.updatedAt?.seconds||a.createdAt?.seconds||0));
- for(const l of sorted){const mine=l.authorUid===currentUser?.uid;if(l.status!=="published"&&!mine)continue;const wrap=document.createElement("div");wrap.className="ds-letter-entry";const open=document.createElement("button");open.className="ds-letter-open";open.type="button";const name=document.createElement("strong");name.textContent="💌 "+(l.title||"untitled");const meta=document.createElement("small");meta.textContent=(mine?"from me":"from "+(l.authorName||"my favourite person"))+" · "+dateText(l.updatedAt||l.createdAt);open.append(name,meta);open.onclick=()=>readLetter(l);wrap.append(open);if(mine){const edit=document.createElement("button");edit.type="button";edit.className="ds-letter-edit";edit.textContent="edit ✎";edit.onclick=()=>startEdit(l);wrap.append(edit);} (l.status==="published"?pub:draft).append(wrap);}
- if(!pub.children.length)pub.textContent="no published letters yet ♡";if(!draft.children.length)draft.textContent="no private drafts yet ♡";
+ const integrated=document.getElementById("dsIntegratedLetters");if(integrated)integrated.replaceChildren();
+ for(const l of sorted){const mine=l.authorUid===currentUser?.uid;if(l.status!=="published"&&!mine)continue;const wrap=document.createElement("div");wrap.className="ds-letter-entry";const open=document.createElement("button");open.className="ds-letter-open";open.type="button";const name=document.createElement("strong");name.textContent="💌 "+(l.title||"untitled");const meta=document.createElement("small");meta.textContent=(mine?"from me":"from "+(l.authorName||"my favourite person"))+" · "+letterDateText(l);if(l.status==="published"){const icon=document.createElement("span");icon.className="ds-letter-icon";icon.textContent="💌";const text=document.createElement("span");text.className="ds-letter-text";text.append(name,meta);open.append(icon,text);wrap.classList.add("ds-letter-integrated");}else open.append(name,meta);open.onclick=()=>readLetter(l);wrap.append(open);if(mine){const edit=document.createElement("button");edit.type="button";edit.className="ds-letter-edit";edit.textContent="edit ✎";edit.onclick=()=>startEdit(l);wrap.append(edit);} (l.status==="published"?(integrated||pub):draft).append(wrap);}
+ if(!pub.children.length && !(integrated?.children.length))pub.textContent="no published letters yet ♡";else pub.textContent="";if(!draft.children.length)draft.textContent="no private drafts yet ♡";
 }
 $("dsNewLetter").onclick=()=>startEdit();$("dsLetterClose").onclick=close;$("dsLetterReadClose").onclick=close;overlay.onclick=e=>{if(e.target===overlay)close();};
-async function save(status){if(!currentUser)return;const title=$("dsLetterTitle").value.trim(),body=$("dsLetterBody").value.trim();if(!title||!body){error.textContent="add a title and your letter first ♡";return;}const buttons=[$("dsLetterSaveDraft"),$("dsLetterPublish")];buttons.forEach(b=>b.disabled=true);error.textContent="saving…";try{const existing=allLetters.find(l=>l.id===editingId);if(existing&&existing.authorUid!==currentUser.uid)throw Error("Only the author can edit this letter.");const payload={title,body,status,updatedAt:serverTimestamp()};if(editingId)await updateDoc(doc(db,"letters",editingId),payload);else await addDoc(letters,{...payload,authorUid:currentUser.uid,authorName:currentUser.email?.split("@")[0]||"me",createdAt:serverTimestamp()});close();}catch(e){error.textContent="Couldn't save: "+e.message;}finally{buttons.forEach(b=>b.disabled=false);}}
+async function save(status){if(!currentUser)return;const title=$("dsLetterTitle").value.trim(),body=$("dsLetterBody").value.trim(),letterDate=$("dsLetterDate").value;if(!title||!body){error.textContent="add a title and your letter first ♡";return;}const buttons=[$("dsLetterSaveDraft"),$("dsLetterPublish")];buttons.forEach(b=>b.disabled=true);error.textContent="saving…";try{const existing=allLetters.find(l=>l.id===editingId);if(existing&&existing.authorUid!==currentUser.uid)throw Error("Only the author can edit this letter.");const payload={title,body,letterDate,status,updatedAt:serverTimestamp()};if(editingId)await updateDoc(doc(db,"letters",editingId),payload);else await addDoc(letters,{...payload,authorUid:currentUser.uid,authorName:currentUser.email?.split("@")[0]||"me",createdAt:serverTimestamp()});close();}catch(e){error.textContent="Couldn't save: "+e.message;}finally{buttons.forEach(b=>b.disabled=false);}}
 $("dsLetterSaveDraft").onclick=()=>save("draft");form.onsubmit=e=>{e.preventDefault();save("published");};
 $("dsLetterDelete").onclick=async()=>{if(!editingId||!currentUser)return;if(!confirm("Delete this letter permanently?"))return;error.textContent="deleting…";try{await deleteDoc(doc(db,"letters",editingId));close();}catch(e){error.textContent="Couldn't delete: "+e.message;}};
 onAuthStateChanged(auth,u=>{
@@ -3319,5 +3325,31 @@ onAuthStateChanged(photoAuth,user=>{
 });
 </script>
 
+
+<!-- Additional letter layout and date styling; Quan Yao's original code remains untouched. -->
+<style>
+#lettersView{height:100%;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#d6b5ae transparent;padding-right:28px}
+#lettersView::-webkit-scrollbar{width:7px}
+#lettersView::-webkit-scrollbar-thumb{background:#d6b5ae;border-radius:99px}
+#lettersView .letters-list{width:min(760px,100%)}
+#lettersView .ds-letter-entry.ds-letter-integrated{width:100%;box-sizing:border-box;margin-top:12px;padding:15px;min-height:82px;border:1px solid var(--line);border-radius:16px;background:#fffdf8;gap:13px}
+#lettersView .ds-letter-integrated .ds-letter-open{display:flex;align-items:center;gap:13px;color:inherit;font:inherit;cursor:pointer}
+#lettersView .ds-letter-integrated .ds-letter-open .ds-letter-icon{font-size:30px;flex:none}
+#lettersView .ds-letter-integrated .ds-letter-open .ds-letter-text{min-width:0;display:block}
+#lettersView .ds-letter-integrated .ds-letter-open strong{display:block;margin-bottom:3px;font-size:inherit}
+#lettersView .ds-letter-integrated .ds-letter-open small{font-size:13px}
+#lettersView .ds-letter-integrated:hover{box-shadow:0 8px 20px rgba(93,70,54,.08)}
+#lettersView .ds-letters-section{margin-top:22px}
+#dsLetterDate{color-scheme:light}
+</style>
+
+<!-- Added safeguard: hide deletion controls for our saved Someday and mailbox notes.
+     Original website functions and content are left unchanged. -->
+<style id="ds-protect-notes">
+/* Someday: retain the pencil (edit) but hide the delete cross. */
+#memoGrid .memo-actions button[title="Delete"] { display:none !important; }
+/* Little mailbox: keep all previously sent notes visible and non-deletable. */
+#dsMailList .ds-mail-entry button[title="delete note"] { display:none !important; }
+</style>
 </body>
 </html>
