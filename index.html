@@ -1539,6 +1539,40 @@
     .ds-calendar-feedback {min-height:17px;font-size:12px;color:#a44d4d;margin-top:10px}
     .ds-calendar-help {font-size:12px;opacity:.75;line-height:1.6}
 
+  
+/* ADD-ON: shared mailbox and someday sync */
+.ds-mail-btn{border:1px solid var(--line);border-radius:999px;background:var(--pink-soft);padding:7px 12px;cursor:pointer;white-space:nowrap}
+.ds-mail-toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:12px 0;flex-wrap:wrap}
+.ds-mail-list{display:grid;gap:10px;max-height:52vh;overflow-y:auto}
+.ds-mail-entry{background:#fffdf8;border:1px solid var(--line);border-radius:15px;padding:13px 15px}
+.ds-mail-entry strong{display:block;font-size:14px}.ds-mail-entry p{margin:8px 0;white-space:pre-wrap;font-size:14px;line-height:1.5}
+.ds-mail-entry small{color:var(--muted);font-size:11px}.ds-mail-entry button{float:right;border:0;background:transparent;cursor:pointer}
+.ds-mail-compose textarea{width:100%;min-height:110px;resize:vertical;border:1px solid var(--line);border-radius:12px;background:#fffdf8;padding:11px;font:inherit;color:var(--brown)}
+.ds-mail-compose select{width:100%;border:1px solid var(--line);border-radius:12px;background:#fffdf8;padding:10px;font:inherit;color:var(--brown)}
+.ds-someday-state{font-size:12px;color:var(--muted);margin-bottom:12px}
+
+
+/* ADD-ON: a little mailbox tucked under the clocks */
+.ds-clock-mailbox{display:block;width:100%;margin-top:10px;padding:9px 14px;text-align:left;border:1px solid var(--line);border-radius:20px;background:rgba(255,250,243,.83);box-shadow:0 9px 22px rgba(93,70,54,.07);cursor:pointer;transition:transform .2s ease,box-shadow .2s ease;color:var(--brown)}
+.ds-clock-mailbox:hover{transform:translateY(-2px);box-shadow:0 12px 25px rgba(93,70,54,.11)}
+.ds-clock-mailbox-heading{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:14px;font-weight:700}
+.ds-clock-mailbox-count{font-size:10px;font-weight:400;background:var(--pink-soft);padding:2px 6px;border-radius:999px;white-space:nowrap}
+.ds-clock-mailbox-count[hidden]{display:none}
+.ds-clock-mailbox-footer{display:flex;justify-content:space-between;margin-top:6px;padding-top:5px;border-top:1px solid rgba(93,70,54,.1);font-size:11px;opacity:.65}
+
+
+/* Shared photo uploader */
+.ds-photo-tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:-7px 0 20px}
+.ds-photo-tools button{border:1px solid var(--line);background:var(--pink-soft);border-radius:999px;padding:10px 15px;cursor:pointer}
+.ds-photo-tools button:disabled{opacity:.5;cursor:wait}
+.ds-photo-tools small{font-size:12px;color:var(--muted)}
+.ds-photo-upload{display:none;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 18px;padding:14px;border:1px solid var(--line);border-radius:15px;background:var(--paper)}
+.ds-photo-upload.show{display:flex}
+.ds-photo-upload input{font:inherit;max-width:100%}
+.ds-photo-upload input[type=text]{padding:9px;border:1px solid var(--line);border-radius:10px;background:#fffdf8}
+.ds-photo-upload button{border:1px solid var(--line);border-radius:999px;padding:9px 13px;background:var(--pink-soft);cursor:pointer}
+#dsPhotoStatus{font-size:12px;color:var(--muted);margin:0 0 14px}
+
   </style>
 </head>
 
@@ -1631,6 +1665,7 @@
           <button class="add-memo-btn" id="addMemoButton">+ add a memo</button>
         </div>
 
+        <div class="ds-someday-state" id="dsSomedayState">connecting our someday notes ♡</div>
         <div class="memo-grid" id="memoGrid"></div>
         <div class="coming-soon">add as many little plans as you want ♡</div>
       </div>
@@ -1700,6 +1735,13 @@
             </div>
           </button>
           <div class="coming-soon">more letters will live here ♡</div>
+          <div class="ds-letters-section">
+            <div class="ds-letters-heading"><strong>our new letters ♡</strong><button type="button" id="dsNewLetter">+ write a letter</button></div>
+            <p id="dsLettersStatus">sign in to write and read our letters ♡</p>
+            <div id="dsLettersPublished"></div>
+            <h3>my private drafts ✎</h3>
+            <div id="dsLettersDrafts"></div>
+          </div>
         </div>
       </div>
 
@@ -1726,6 +1768,14 @@
         </div>
 
 
+        <div class="ds-photo-tools"><button id="dsPhotoToggle" type="button">+ add a photo ♡</button><small>both of us can add memories here</small></div>
+        <form class="ds-photo-upload" id="dsPhotoForm">
+          <input id="dsPhotoFile" type="file" accept="image/jpeg,image/png,image/webp" required aria-label="Choose a photo">
+          <input id="dsPhotoCaption" type="text" maxlength="180" placeholder="a little caption (optional) ♡" aria-label="Photo caption">
+          <button id="dsPhotoSubmit" type="submit">upload ♡</button>
+          <button id="dsPhotoCancel" type="button">cancel</button>
+        </form>
+        <p id="dsPhotoStatus">sign in with our calendar account to add photos ♡</p>
         <div class="photo-grid">
 
           <div class="gallery-photo">
@@ -1848,6 +1898,11 @@
           <div class="date" id="philadelphiaDate">loading...</div>
         </div>
       </div>
+      <!-- ADD-ON: compact mailbox below the two clocks -->
+      <button class="ds-clock-mailbox" id="dsOpenMailbox" type="button" aria-label="Open our little mailbox">
+        <span class="ds-clock-mailbox-heading"><span>💌 little mailbox ♡</span><span class="ds-clock-mailbox-count" id="dsMailboxCount" hidden></span></span>
+        <span class="ds-clock-mailbox-footer">open mailbox <span aria-hidden="true">›</span></span>
+      </button>
     </aside>
 
     <!-- tiny app icons -->
@@ -2114,6 +2169,26 @@
   </form>
 </div>
 
+
+<!-- ADD-ON: little mailbox -->
+<div class="ds-calendar-overlay" id="dsMailboxOverlay" role="dialog" aria-modal="true" aria-label="our little mailbox">
+  <div class="ds-calendar-dialog" style="width:min(550px,100%)">
+    <div class="ds-mail-toolbar"><h3 style="margin:0">our little mailbox 💌</h3><button class="ds-mail-btn" type="button" id="dsCloseMailbox">close ×</button></div>
+    <p class="ds-calendar-help">little notes from us, saved with their date and time ♡</p>
+    <div class="ds-mail-toolbar"><button class="ds-mail-btn" id="dsComposeMail" type="button">+ leave a note ♡</button><span class="ds-calendar-help" id="dsMailStatus"></span></div>
+    <div class="ds-mail-list" id="dsMailList"></div>
+  </div>
+</div>
+<div class="ds-calendar-overlay" id="dsComposeOverlay" role="dialog" aria-modal="true" aria-label="leave a note">
+  <form class="ds-calendar-dialog ds-mail-compose" id="dsMailForm">
+    <h3>leave a little note ♡</h3>
+    <label for="dsMailFrom">from</label><select id="dsMailFrom"><option value="Hannah">🌸 Hannah</option><option value="Quan Yao">🩵 Quan Yao</option></select>
+    <label for="dsMailMessage">your message</label><textarea id="dsMailMessage" maxlength="1500" required placeholder="thinking of you ♡"></textarea>
+    <div class="ds-calendar-feedback" id="dsMailError"></div>
+    <div class="ds-calendar-buttons"><button type="button" id="dsCancelMail">cancel</button><button class="ds-primary" type="submit" id="dsSaveMail">send ♡</button></div>
+  </form>
+</div>
+
 <!-- birthday popup -->
 <div id="birthdayPopup" class="birthday-popup">
   <div class="birthday-content">
@@ -2235,9 +2310,8 @@
     }
 
     function unlockSite(remember){
-      if(remember){
-        try{ localStorage.setItem(UNLOCK_KEY, PIN_HASH); }catch(e){}
-      }
+      // PIN is required on every page load; never remember an unlocked browser.
+      try{ localStorage.removeItem(UNLOCK_KEY); }catch(e){}
       setBackgroundInert(false);
       document.documentElement.classList.remove("locked");
     }
@@ -2312,12 +2386,10 @@
     let remembered = null;
     try{ remembered = localStorage.getItem(UNLOCK_KEY); }catch(e){}
 
-    if(remembered === PIN_HASH){
-      unlockSite(false);
-    } else {
-      setBackgroundInert(true);
-      setTimeout(() => pinInputs[0].focus(), 50);
-    }
+    // Always start locked, including on a browser that was previously remembered.
+    try{ localStorage.removeItem(UNLOCK_KEY); }catch(e){}
+    setBackgroundInert(true);
+    setTimeout(() => pinInputs[0].focus(), 50);
 
     // ---------- time format ----------
     function twoDigit12Hour(parts) {
@@ -3010,6 +3082,240 @@ onAuthStateChanged(dsAuth, user => {
     dsAccountStatus("calendar couldn't sync — check account access or Firestore rules");
     console.error("Calendar sync:",err);
   });
+});
+</script>
+
+
+<script type="module">
+// ADD-ON: Firebase-backed Someday notes + timestamped mailbox.
+// Existing site, PIN, calendar and birthday-letter code are left in place.
+import {getApp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {getFirestore,collection,addDoc,onSnapshot,updateDoc,deleteDoc,doc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+const app=getApp(),auth=getAuth(app),db=getFirestore(app);
+const el=id=>document.getElementById(id);
+const memosRef=collection(db,"someday_memos"), mailRef=collection(db,"mailbox_messages");
+let user=null,unsubMemos=null,unsubMail=null,remoteMemos=[],mailItems=[];
+const memoDocIds=new Map();
+const noteState=message=>{el("dsSomedayState").textContent=message;};
+function mailDate(value){
+  if(!value) return "sending…";
+  const date=value.toDate?value.toDate():new Date(value);
+  return new Intl.DateTimeFormat("en-GB",{dateStyle:"medium",timeStyle:"short",timeZone:"Asia/Singapore"}).format(date)+" SGT";
+}
+function renderMail(){
+  const list=el("dsMailList");list.replaceChildren();
+  const historic=document.createElement("article");historic.className="ds-mail-entry";
+  const title=document.createElement("strong");title.textContent="💌 You've got mail!";
+  const body=document.createElement("p");body.textContent="Quanyao is really sorry... ♡";
+  const stamp=document.createElement("small");stamp.textContent="original website message · date unknown";
+  historic.append(title,body,stamp);list.append(historic);
+  for(const entry of mailItems){
+    const item=document.createElement("article");item.className="ds-mail-entry";
+    const heading=document.createElement("strong");heading.textContent="💌 from "+(entry.from||"us");
+    const message=document.createElement("p");message.textContent=entry.message||"";
+    const time=document.createElement("small");time.textContent=mailDate(entry.createdAt);
+    item.append(heading,message,time);
+    if(user){const remove=document.createElement("button");remove.type="button";remove.textContent="×";remove.title="delete note";
+      remove.addEventListener("click",async()=>{if(!confirm("Delete this note?"))return;try{await deleteDoc(doc(db,"mailbox_messages",entry.id));}catch(e){alert(e.message);}});item.prepend(remove);}
+    list.append(item);
+  }
+}
+function refreshToast(){
+  // The original notification is preserved; show the latest shared note when available.
+  const latest=mailItems[0];
+  const count=el("dsMailboxCount");
+  if(count){count.hidden=mailItems.length===0;count.textContent=`${mailItems.length} note${mailItems.length===1?"":"s"}`;}
+  if(!latest)return;
+  const notification=el("notification");
+  notification.querySelector("strong").textContent="💌 You've got mail!";
+  notification.querySelector(".notification-copy span").textContent=(latest.from||"us")+": "+(latest.message||"").slice(0,75);
+  notification.style.display="flex";
+}
+function syncMemos(){
+  memos=remoteMemos.map(m=>({id:m.id,emoji:m.emoji||"♡",title:m.title||"",status:m.status||"♡ someday"}));
+  renderMemos();
+}
+// Keep the existing memo form and memo cards; intercept only saves and deletes.
+const saveButton=el("saveMemoButton");
+saveButton.addEventListener("click",async event=>{
+  event.stopImmediatePropagation();
+  if(!user){alert("Sign in to the shared calendar once to sync our Someday notes ♡");return;}
+  const title=el("memoTitle").value.trim(),emoji=el("memoEmoji").value.trim()||"♡",status=el("memoStatus").value;
+  if(!title){alert("write a little memo first ♡");return;}
+  saveButton.disabled=true;
+  try{
+    if(editingMemoId!=null){const id=memoDocIds.get(Number(editingMemoId));if(!id)throw new Error("Couldn't find this memo. Please refresh.");await updateDoc(doc(db,"someday_memos",id),{title,emoji,status});}
+    else await addDoc(memosRef,{id:Date.now(),title,emoji,status,createdAt:serverTimestamp()});
+    closeMemoForm();
+  }catch(err){alert("Couldn't save memo: "+err.message);}finally{saveButton.disabled=false;}
+},true);
+// Existing memo buttons call deleteMemo(id), so wrap that function without modifying its original definition.
+const originalDeleteMemo=window.deleteMemo;
+window.deleteMemo=async function(id){
+  if(!user){alert("Sign in first to sync our notes ♡");return;}
+  const found=memos.find(m=>m.id===id);if(!found||!confirm(`Delete "${found.title}"?`))return;
+  const firestoreId=memoDocIds.get(Number(id));
+  if(!firestoreId)return alert("Couldn't find this note in Firebase.");
+  try{await deleteDoc(doc(db,"someday_memos",firestoreId));}catch(e){alert("Couldn't delete memo: "+e.message);}
+};
+const mailOverlay=el("dsMailboxOverlay"),composeOverlay=el("dsComposeOverlay");
+el("dsOpenMailbox").addEventListener("click",()=>{renderMail();mailOverlay.classList.add("show");});
+el("dsCloseMailbox").addEventListener("click",()=>mailOverlay.classList.remove("show"));
+el("dsComposeMail").addEventListener("click",()=>{
+  if(!user){alert("Sign in to the calendar once to send shared notes ♡");return;}
+  composeOverlay.classList.add("show");
+});
+el("dsCancelMail").addEventListener("click",()=>composeOverlay.classList.remove("show"));
+for(const overlay of [mailOverlay,composeOverlay])overlay.addEventListener("click",e=>{if(e.target===overlay)overlay.classList.remove("show");});
+el("dsMailForm").addEventListener("submit",async e=>{
+  e.preventDefault();if(!user)return;
+  const button=el("dsSaveMail"),message=el("dsMailMessage").value.trim();if(!message)return;
+  button.disabled=true;el("dsMailError").textContent="";
+  try{await addDoc(mailRef,{from:el("dsMailFrom").value,message,createdAt:serverTimestamp(),authorUid:user.uid});
+    el("dsMailMessage").value="";composeOverlay.classList.remove("show");mailOverlay.classList.add("show");
+  }catch(err){el("dsMailError").textContent="Couldn't send: "+err.message;}finally{button.disabled=false;}
+});
+onAuthStateChanged(auth,current=>{
+  if(unsubMemos)unsubMemos();if(unsubMail)unsubMail();
+  user=current;memoDocIds.clear();remoteMemos=[];mailItems=[];
+  const count=el("dsMailboxCount");if(count)count.hidden=true;
+  if(!user){noteState("sign in to the calendar once to sync our someday notes ♡");renderMail();return;}
+  noteState("connecting our shared notes ♡");
+  unsubMemos=onSnapshot(memosRef,snap=>{
+    remoteMemos=snap.docs.map(d=>({firestoreId:d.id,...d.data()})).sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
+    memoDocIds.clear();for(const m of remoteMemos)memoDocIds.set(Number(m.id),m.firestoreId);
+    syncMemos();noteState("our someday notes · synced ♡");
+  },err=>{noteState("Someday couldn't sync — check Firestore rules");console.error("Someday sync",err);});
+  unsubMail=onSnapshot(mailRef,snap=>{
+    mailItems=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+    renderMail();refreshToast();el("dsMailStatus").textContent="synced ♡";
+  },err=>{el("dsMailStatus").textContent="couldn't sync · check Firestore rules";console.error("Mailbox sync",err);});
+});
+</script>
+
+
+<style>
+.ds-letters-section{width:100%;margin-top:18px;padding-top:18px;border-top:1px solid rgba(100,65,65,.18);color:#6d4a45}
+.ds-letters-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ds-letters-section h3{font-size:16px;margin:22px 0 10px}
+.ds-letters-section p{font-size:13px;opacity:.75;margin:9px 0}
+.ds-letters-section button,.ds-letter-editor button{border:1px solid #d9b6bb;background:#fff5f4;color:#805052;border-radius:13px;padding:10px 14px;cursor:pointer;font:inherit}
+.ds-letters-section button:hover,.ds-letter-editor button:hover{background:#ffe8ed}
+.ds-letter-entry{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;margin:10px 0;border:1px solid #ead8d6;border-radius:14px;background:#fffaf8}
+.ds-letter-entry .ds-letter-open{flex:1;text-align:left;border:0;background:transparent;padding:0;min-width:0}
+.ds-letter-entry small{display:block;margin-top:4px;opacity:.7}
+.ds-letter-entry .ds-letter-edit{font-size:12px;flex-shrink:0}
+.ds-letter-editor-backdrop{position:fixed;inset:0;background:rgba(41,27,29,.55);z-index:99999;display:none;align-items:center;justify-content:center;padding:16px;overflow-y:auto}
+.ds-letter-editor-backdrop.show{display:flex}
+.ds-letter-editor{width:min(620px,100%);max-height:90vh;overflow:auto;background:#fffaf6;color:#684b47;border-radius:20px;padding:24px;box-shadow:0 12px 50px #0003}
+.ds-letter-editor h2{margin:0 0 12px}.ds-letter-editor label{display:block;font-size:13px;margin:12px 0 5px}
+.ds-letter-editor input,.ds-letter-editor textarea{width:100%;box-sizing:border-box;border:1px solid #decac5;background:white;color:#5b4341;border-radius:10px;padding:12px;font:inherit}
+.ds-letter-editor textarea{min-height:220px;resize:vertical;line-height:1.6}
+.ds-letter-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.ds-letter-actions button{flex:1}
+.ds-letter-editor .ds-letter-danger{color:#a33f4d}.ds-letter-editor .ds-letter-paper{white-space:pre-wrap;line-height:1.8;overflow-wrap:anywhere}
+</style>
+<div class="ds-letter-editor-backdrop" id="dsLetterOverlay" role="dialog" aria-modal="true" aria-label="Letter editor">
+ <div class="ds-letter-editor">
+  <h2 id="dsLetterHeading">write a letter ♡</h2>
+  <form id="dsLetterForm">
+   <label for="dsLetterTitle">title</label><input id="dsLetterTitle" maxlength="160" required placeholder="to my favourite person ♡">
+   <label for="dsLetterBody">your letter</label><textarea id="dsLetterBody" required placeholder="Dear you..."></textarea>
+   <p id="dsLetterError" role="status"></p>
+   <div class="ds-letter-actions"><button type="button" id="dsLetterClose">close</button><button type="button" id="dsLetterDelete" class="ds-letter-danger" hidden>delete</button><button type="button" id="dsLetterSaveDraft">save private draft</button><button type="submit" id="dsLetterPublish">publish ♡</button></div>
+  </form>
+  <div id="dsLetterRead" hidden><div id="dsLetterReadBody" class="ds-letter-paper"></div><div class="ds-letter-actions"><button type="button" id="dsLetterReadClose">close ♡</button></div></div>
+ </div>
+</div>
+<script type="module">
+import {getApp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {getFirestore,collection,query,where,addDoc,doc,updateDoc,deleteDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+const app=getApp(),auth=getAuth(app),db=getFirestore(app),letters=collection(db,"letters");
+const $=id=>document.getElementById(id);
+let currentUser=null,unsubPublished=null,unsubOwn=null,allLetters=[],publishedLetters=[],ownLetters=[],editingId=null;
+const overlay=$("dsLetterOverlay"),form=$("dsLetterForm"),error=$("dsLetterError");
+function close(){overlay.classList.remove("show");}
+function show(){overlay.classList.add("show");error.textContent="";}
+function startEdit(letter=null){if(!currentUser)return;editingId=letter?.id||null;$("dsLetterHeading").textContent=letter?"edit your letter ♡":"write a letter ♡";$("dsLetterTitle").value=letter?.title||"";$("dsLetterBody").value=letter?.body||"";$("dsLetterDelete").hidden=!letter;$("dsLetterSaveDraft").textContent=letter?.status==="published"?"unpublish to drafts":"save private draft";form.hidden=false;$("dsLetterRead").hidden=true;show();}
+function readLetter(letter){$("dsLetterHeading").textContent=letter.title;$("dsLetterReadBody").textContent=letter.body;form.hidden=true;$("dsLetterRead").hidden=false;show();}
+function dateText(ts){return ts?.toDate?.().toLocaleDateString(undefined,{day:"numeric",month:"short",year:"numeric"})||"just now";}
+function render(){const pub=$("dsLettersPublished"),draft=$("dsLettersDrafts");pub.replaceChildren();draft.replaceChildren();const signed=!!currentUser;$("dsNewLetter").disabled=!signed;$("dsLettersStatus").textContent=signed?"published letters are shared · drafts are just yours ♡":"sign in using our calendar account to access letters ♡";
+ const sorted=[...allLetters].sort((a,b)=>(b.updatedAt?.seconds||b.createdAt?.seconds||0)-(a.updatedAt?.seconds||a.createdAt?.seconds||0));
+ for(const l of sorted){const mine=l.authorUid===currentUser?.uid;if(l.status!=="published"&&!mine)continue;const wrap=document.createElement("div");wrap.className="ds-letter-entry";const open=document.createElement("button");open.className="ds-letter-open";open.type="button";const name=document.createElement("strong");name.textContent="💌 "+(l.title||"untitled");const meta=document.createElement("small");meta.textContent=(mine?"from me":"from "+(l.authorName||"my favourite person"))+" · "+dateText(l.updatedAt||l.createdAt);open.append(name,meta);open.onclick=()=>readLetter(l);wrap.append(open);if(mine){const edit=document.createElement("button");edit.type="button";edit.className="ds-letter-edit";edit.textContent="edit ✎";edit.onclick=()=>startEdit(l);wrap.append(edit);} (l.status==="published"?pub:draft).append(wrap);}
+ if(!pub.children.length)pub.textContent="no published letters yet ♡";if(!draft.children.length)draft.textContent="no private drafts yet ♡";
+}
+$("dsNewLetter").onclick=()=>startEdit();$("dsLetterClose").onclick=close;$("dsLetterReadClose").onclick=close;overlay.onclick=e=>{if(e.target===overlay)close();};
+async function save(status){if(!currentUser)return;const title=$("dsLetterTitle").value.trim(),body=$("dsLetterBody").value.trim();if(!title||!body){error.textContent="add a title and your letter first ♡";return;}const buttons=[$("dsLetterSaveDraft"),$("dsLetterPublish")];buttons.forEach(b=>b.disabled=true);error.textContent="saving…";try{const existing=allLetters.find(l=>l.id===editingId);if(existing&&existing.authorUid!==currentUser.uid)throw Error("Only the author can edit this letter.");const payload={title,body,status,updatedAt:serverTimestamp()};if(editingId)await updateDoc(doc(db,"letters",editingId),payload);else await addDoc(letters,{...payload,authorUid:currentUser.uid,authorName:currentUser.email?.split("@")[0]||"me",createdAt:serverTimestamp()});close();}catch(e){error.textContent="Couldn't save: "+e.message;}finally{buttons.forEach(b=>b.disabled=false);}}
+$("dsLetterSaveDraft").onclick=()=>save("draft");form.onsubmit=e=>{e.preventDefault();save("published");};
+$("dsLetterDelete").onclick=async()=>{if(!editingId||!currentUser)return;if(!confirm("Delete this letter permanently?"))return;error.textContent="deleting…";try{await deleteDoc(doc(db,"letters",editingId));close();}catch(e){error.textContent="Couldn't delete: "+e.message;}};
+onAuthStateChanged(auth,u=>{
+ if(unsubPublished)unsubPublished();if(unsubOwn)unsubOwn();currentUser=u;publishedLetters=[];ownLetters=[];allLetters=[];render();if(!u)return;
+ const merge=()=>{allLetters=[...new Map([...publishedLetters,...ownLetters].map(l=>[l.id,l])).values()];render();};
+ const fail=e=>{$("dsLettersStatus").textContent="Letters couldn't sync — check your Firestore rules: "+e.message;console.error("Letters sync",e);};
+ unsubPublished=onSnapshot(query(letters,where("status","==","published")),snap=>{publishedLetters=snap.docs.map(d=>({id:d.id,...d.data()}));merge();},fail);
+ unsubOwn=onSnapshot(query(letters,where("authorUid","==",u.uid)),snap=>{ownLetters=snap.docs.map(d=>({id:d.id,...d.data()}));merge();},fail);
+});
+</script>
+
+
+<script type="module">
+// Shared photos: Worker stores files in GitHub, Firestore stores gallery entries.
+import {getApp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {getAuth,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {getFirestore,collection,addDoc,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+const photoApp=getApp(),photoAuth=getAuth(photoApp),photoDb=getFirestore(photoApp);
+const photoRef=collection(photoDb,"photos");
+const photoEl=id=>document.getElementById(id);
+const photoGrid=document.querySelector("#photosView .photo-grid"),photoForm=photoEl("dsPhotoForm");
+const photoStatus=photoEl("dsPhotoStatus"),photoButton=photoEl("dsPhotoSubmit");
+const workerURL="https://dublinspace-photos.hannah-su67.workers.dev/upload";
+let photoUser=null,stopPhotos=null;
+photoEl("dsPhotoToggle").addEventListener("click",()=>{
+ if(!photoUser){photoStatus.textContent="sign in using the calendar account first ♡";return;}
+ photoForm.classList.toggle("show");
+});
+photoEl("dsPhotoCancel").addEventListener("click",()=>photoForm.classList.remove("show"));
+function renderUploadedPhotos(items){
+ photoGrid.querySelectorAll("[data-ds-uploaded]").forEach(el=>el.remove());
+ for(const entry of items){
+   if(typeof entry.path!=="string" || !/^photos\/[a-f0-9-]{36}\.(jpg|png|webp)$/.test(entry.path))continue;
+   const card=document.createElement("div");card.className="gallery-photo";card.dataset.dsUploaded="true";
+   const img=document.createElement("img");img.loading="lazy";img.alt=entry.caption||"A memory of us";
+   img.src="https://mabelwood.github.io/dublinspace/"+entry.path;
+   card.appendChild(img);
+   if(entry.caption){const caption=document.createElement("div");caption.className="photo-caption";caption.textContent=entry.caption;card.appendChild(caption);}
+   photoGrid.appendChild(card);
+ }
+}
+photoForm.addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!photoUser){photoStatus.textContent="sign in first ♡";return;}
+ const file=photoEl("dsPhotoFile").files[0];
+ if(!file || file.size===0 || file.size>5*1024*1024 || !["image/jpeg","image/png","image/webp"].includes(file.type)){
+  photoStatus.textContent="Choose a JPG, PNG or WebP smaller than 5 MB ♡";return;
+ }
+ photoButton.disabled=true;photoStatus.textContent="uploading your memory… ♡";
+ try{
+  const token=await photoUser.getIdToken();const formData=new FormData();formData.append("photo",file);
+  const res=await fetch(workerURL,{method:"POST",headers:{Authorization:"Bearer "+token},body:formData});
+  const result=await res.json();if(!res.ok || !result.ok || !result.path)throw new Error(result.error||"Upload failed");
+  // If metadata save fails, the image remains in GitHub and can be recovered from its path.
+  try{await addDoc(photoRef,{path:result.path,caption:photoEl("dsPhotoCaption").value.trim(),authorUid:photoUser.uid,createdAt:serverTimestamp()});}
+  catch(err){throw new Error("Photo reached GitHub, but gallery sync failed. Save this path: "+result.path+". "+err.message);}
+  photoForm.reset();photoForm.classList.remove("show");photoStatus.textContent="photo uploaded! It may take a minute to appear on GitHub Pages ♡";
+ }catch(err){photoStatus.textContent="Couldn't finish: "+err.message;console.error("Photo upload",err);}
+ finally{photoButton.disabled=false;}
+});
+onAuthStateChanged(photoAuth,user=>{
+ if(stopPhotos){stopPhotos();stopPhotos=null;}
+ photoUser=user;renderUploadedPhotos([]);photoForm.classList.remove("show");
+ if(!user){photoStatus.textContent="sign in using our calendar account to add photos ♡";return;}
+ photoStatus.textContent="our photos are syncing ♡";
+ stopPhotos=onSnapshot(photoRef,snap=>{
+  const entries=snap.docs.map(d=>d.data()).sort((a,b)=>(a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));
+  renderUploadedPhotos(entries);photoStatus.textContent="our shared photo gallery ♡";
+ },err=>{photoStatus.textContent="Gallery couldn't sync — check Firestore rules: "+err.message;console.error("Gallery sync",err);});
 });
 </script>
 
